@@ -1,0 +1,17 @@
+.close-button {
+    position: absolute;
+    top: 8px; /* Adjust the top position as needed */
+    left: 8px; /* Adjust the right position as needed */
+    z-index: 1; /* Ensure the button is above the tab content */
+    color: white;
+    
+}
+
+.spacer {
+    flex: 1;
+  }
+  .drawer-container {
+    position: absolute;
+    z-index: 1000; /* Adjust the z-index value as needed */
+  }
+  

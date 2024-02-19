@@ -1,0 +1,32 @@
+/* warehouse.component.css */
+
+.item-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .item {
+    width: 20%; /* Set the width to 20% for smaller items and multiple columns */
+    box-sizing: border-box;
+    padding: 10px;
+  }
+  
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .mat-card {
+    width: 100%; /* Ensure the card takes the full width of its container */
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .delete-button-container {
+    margin-right: 20px; /* Adjust the margin as needed */
+  }

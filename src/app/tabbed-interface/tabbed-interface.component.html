@@ -1,0 +1,27 @@
+<!-- tabbed-interface.component.html -->
+<mat-toolbar color="primary">
+    <!-- "+" button to add a new tab -->
+
+    <button mat-button (click)="toggleDrawer()">Side menu</button>
+    <button mat-button (click)="addNewTab()"> Dodaj prostoriju </button>
+    <span class="spacer"></span>
+    <button mat-button (click)="openWarehouse()">Skladište</button>
+
+  </mat-toolbar>
+  
+  <!-- Container div for the mat-tab-group -->
+  <div class="tab-container">
+    <mat-tab-group>
+      <mat-tab *ngFor="let tab of tabbedInterfaceService.tabs" [label]="tab.label">
+        <!-- Content of the tab -->
+           <!-- "x" button to remove the tab -->
+          <!-- "x" button to remove the tab -->
+      
+        <ng-container *ngComponentOutlet="tab.content"></ng-container>
+        <button mat-button class="close-button" (click)="removeTab(tab)">
+            <span style="color: white;">Izbriši prostoriju</span>
+        </button>
+     
+      </mat-tab>
+    </mat-tab-group>
+  </div>

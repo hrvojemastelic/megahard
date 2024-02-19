@@ -7,15 +7,9 @@
 
 <div class="example-boundary">
 
-  <div class="example-box"
-  *ngFor="let element of draggableElements" 
-  cdkDragBoundary=".example-boundary" 
-  cdkDrag
-  >
-  <input [(ngModel)]="element.label" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: 100%;" />
-
-  <button mat-button (click)="toggleDrawer()">Dodaj</button>
-
+  <div class="example-box" *ngFor="let element of draggableElements" cdkDragBoundary=".example-boundary" cdkDrag>
+    <input [(ngModel)]="element.label" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: 100%;" />
+    <button mat-button (click)="toggleDrawer()" style="background-color: green;">Dodaj</button>
   </div>
 </div>
 

@@ -7,12 +7,13 @@
 }
 
 .example-box {
-  width: 100px; /* Set the desired width */
-  height: 50px; /* Set the desired height */
+  width: 100px;
+  height: 80px; /* Adjusted height to accommodate input and button */
   border: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   cursor: move;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column; /* Display children vertically */
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -27,6 +28,10 @@
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
               0 2px 2px 0 rgba(0, 0, 0, 0.14),
               0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.element-input {
+  margin-bottom: 5px; /* Add margin between input and button */
 }
 
 

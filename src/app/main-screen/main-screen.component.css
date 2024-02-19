@@ -7,21 +7,14 @@
 }
 
 .example-box {
+  position: absolute;
   width: 100px;
-  height: 80px; /* Adjusted height to accommodate input and button */
+  height: 80px;
   border: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   cursor: move;
-  display: flex;
-  flex-direction: column; /* Display children vertically */
-  justify-content: center;
-  align-items: center;
-  text-align: center;
   background: #fff;
   border-radius: 4px;
-  margin-right: 25px;
-  position: relative;
-  z-index: 1;
   box-sizing: border-box;
   padding: 10px;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -42,10 +35,11 @@
 }
 
 .example-boundary {
-  width: 99.7vw; /* Use vw for 100% of viewport width */
-  height: calc(100vh - 195px); /* Adjusted height to account for scrollbar width, assuming a scrollbar width of 17px */
+  position: relative;
+  width: 99.7vw;
+  height: calc(100vh - 195px);
   max-width: 100%;
   max-height: 100%;
   border: dotted #ccc 2px;
-  overflow: hidden; /* Prevent overflowing content */
+  overflow: hidden;
 }

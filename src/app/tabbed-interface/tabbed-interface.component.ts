@@ -9,7 +9,6 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SidenavComponent } from '../sidenav/sidenav.component';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -28,7 +27,7 @@ export interface Tab {
     MatDrawer,
     MatDrawerContainer,
     MatDrawerContent,
-    SidenavComponent
+    
   ],
   templateUrl: './tabbed-interface.component.html',
   styleUrl: './tabbed-interface.component.css'

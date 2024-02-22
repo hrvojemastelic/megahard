@@ -30,3 +30,19 @@
   .delete-button-container {
     margin-right: 20px; /* Adjust the margin as needed */
   }
+  mat-grid-tile {
+    background: lightblue;
+  }
+  ::ng-deep .mat-grid-tile-content {
+    top: unset;
+    left: unset;
+    right: unset;
+    bottom: unset;
+    position: relative; /* Change this to relative if you want to remove absolute positioning */
+    display: flex !important;
+    align-items: start !important; /* Adjust this to your needs */
+    justify-content: start !important; /* Adjust this to your needs */
+    height: unset;
+    padding: unset;
+    margin: unset;
+  }

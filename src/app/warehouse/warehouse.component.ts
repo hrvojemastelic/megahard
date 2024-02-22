@@ -1,5 +1,5 @@
 // warehouse.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Item } from '../../models/item.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
 import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-warehouse',
@@ -22,58 +23,67 @@ import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
     MatInputModule,
     MatFormFieldModule,
     MatCardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatGridListModule
   ],
 })
-export class WarehouseComponent {
+export class WarehouseComponent  implements OnInit {
   newItem: Item = { name: '', value: 0, quantity: 0 ,category:''};
   searchTerm: string = '';
   items: Item[] = [];
-  displayedItems: Item[][] = [];
+  originalItems: Item[] = [];
   selectedItems: Set<Item> = new Set<Item>();
 
+
+  constructor() {
+    // Initialize the originalItems with a copy of the initial items array
+    this.originalItems = [...this.items];
+  }
+  ngOnInit(): void {
+    this.originalItems = [...this.items];
+
+  }
+
+  
   addItem() {
-    this.items.push({ ...this.newItem });
-    this.displayItems();
-    this.clearInputs();
+  // Add the new item to the items array
+  this.items.push({ ...this.newItem });
+
+  // Update the originalItems array to reflect the latest state
+  this.originalItems = [...this.items];
+
+  // Clear the inputs
+  this.clearInputs();
   }
 
   searchItems() {
-    this.displayedItems = this.items
-      .filter(item =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      )
-      .map(item => [item]);
-  }
-
-// warehouse.component.ts
-
-// ... (previous code)
-
-displayItems() {
-  const itemsPerColumn = 10;
-  const totalItems = this.items.length;
-  const totalColumns = Math.ceil(totalItems / itemsPerColumn);
-
-  this.displayedItems = [];
-
-  for (let i = 0; i < itemsPerColumn; i++) {
-    const column = [];
-    for (let j = 0; j < totalColumns; j++) {
-      const index = i + j * itemsPerColumn;
-      if (index < totalItems) {
-        column.push(this.items[index]);
-      }
+    if (this.searchTerm.trim() === '') {
+      // If the search term is empty, reset the items array to the original state
+      this.items = [...this.originalItems];
+      this.clearInputs();
+      return;
     }
-    this.displayedItems.push(column);
+
+    // Convert the search term to lowercase for case-insensitive search
+    const searchTermLowerCase = this.searchTerm.toLowerCase();
+
+    // Filter items based on the search term
+    this.items = this.originalItems.filter((item) =>
+      item.name.toLowerCase().includes(searchTermLowerCase)
+    );
   }
-}
+
+  resetSearch() {
+    this.searchTerm = '';
+    // Reset the items array to the original state
+    this.items = [...this.originalItems];
+    this.clearInputs();
+  }
 
 
   clearInputs() {
     this.newItem = { name: '', value: 0, quantity: 0 ,category:''};
   }
-
   toggleItemSelection(item: Item) {
     if (this.selectedItems.has(item)) {
       this.selectedItems.delete(item);
@@ -84,6 +94,6 @@ displayItems() {
 
   deleteSelectedItems() {
     this.items = this.items.filter(item => !this.selectedItems.has(item));
-    this.displayItems();
+    this.originalItems = this.originalItems.filter(item => !this.selectedItems.has(item));
   }
 }

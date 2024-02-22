@@ -7,6 +7,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatInputModule} from '@angular/material/input';
 import { TabbedInterfaceComponent } from '../tabbed-interface/tabbed-interface.component';
+import { SideCalcComponent } from '../side-calc/side-calc.component';
 
 
 /** @title Fixed sidenav */
@@ -23,7 +24,8 @@ import { TabbedInterfaceComponent } from '../tabbed-interface/tabbed-interface.c
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule  ],
+    MatInputModule,
+  SideCalcComponent  ],
 })
 export class SidenavComponent {
 

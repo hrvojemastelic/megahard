@@ -3,7 +3,7 @@
 <div class="header" style="color:white; background-color:blueviolet;" >
   <h2 style="padding-top: 7px;padding-left: 15px;">Warehouse</h2>
   <div class="delete-button-container">
-    <button mat-raised-button color="warn" (click)="deleteSelectedItems()">Delete</button>
+    <button mat-raised-button color="warn" (click)="deleteSelectedItems()" >Delete</button>
   </div>
 </div>
 
@@ -30,21 +30,18 @@
     </mat-form-field>
 
     <button mat-raised-button color="primary" (click)="searchItems()">Search</button>
+    <button mat-raised-button color="warn" (click)="resetSearch()">Reset Search</button>
+
   </div>
 </div>
 
-<div class="item-grid">
-  <div *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]" class="row">
-    <div *ngFor="let item of displayedItems" class="item">
-      <ng-container *ngIf="item[i]">
-        <mat-card>
-          <mat-card-content>
-            <mat-checkbox (change)="toggleItemSelection(item[i])" [checked]="selectedItems.has(item[i])"></mat-checkbox>
-            <p>Name: {{ item[i].name }}</p>
-            <p>Quantity: {{ item[i].quantity }}</p>
-          </mat-card-content>
-        </mat-card>
-      </ng-container>
+<mat-grid-list cols="10" rowHeight="10:9">
+  <mat-grid-tile *ngFor="let item of items;let i = index"  >
+    <div style="display: flex; flex-direction: column;">
+      <mat-checkbox   (change)="toggleItemSelection(item)" [checked]="selectedItems.has(item)"></mat-checkbox>
+      <span style="margin-left: 4px;"> Name: {{ item.name }}</span>
+      <span style="margin-left: 4px;"> Number: {{ item.quantity }}</span>
+      <span style="margin-left: 4px;"> Price: {{ item.value }}€</span>
     </div>
-  </div>
-</div>
+  </mat-grid-tile>
+</mat-grid-list>

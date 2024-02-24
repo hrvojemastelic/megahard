@@ -63,26 +63,25 @@ export class WarehouseComponent  implements OnInit {
       this.clearInputs();
       return;
     }
-
+  
     // Convert the search term to lowercase for case-insensitive search
     const searchTermLowerCase = this.searchTerm.toLowerCase();
-
+  
     // Filter items based on the search term
     this.items = this.originalItems.filter((item) =>
       item.name.toLowerCase().includes(searchTermLowerCase)
     );
   }
-
+  
   resetSearch() {
     this.searchTerm = '';
     // Reset the items array to the original state
     this.items = [...this.originalItems];
     this.clearInputs();
   }
-
-
+  
   clearInputs() {
-    this.newItem = { name: '', value: 0, quantity: 0 ,category:''};
+    this.newItem = { name: '', value: 0, quantity: 0, category: '' };
   }
   toggleItemSelection(item: Item) {
     if (this.selectedItems.has(item)) {

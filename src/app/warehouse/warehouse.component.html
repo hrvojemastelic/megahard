@@ -26,13 +26,13 @@
 
   <div class="input-group">
     <mat-form-field>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Search by Name" />
+      <input matInput [(ngModel)]="searchTerm" placeholder="Search by Name" (input)="searchItems()" />
     </mat-form-field>
-
+  
     <button mat-raised-button color="primary" (click)="searchItems()">Search</button>
     <button mat-raised-button color="warn" (click)="resetSearch()">Reset Search</button>
-
   </div>
+  
 </div>
 
 <mat-grid-list cols="10" rowHeight="10:9">

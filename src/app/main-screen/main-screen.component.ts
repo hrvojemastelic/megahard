@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { TabbedInterfaceService } from '../../services/tsbs.service';
+import { SideCalcComponent } from '../side-calc/side-calc.component';
 
 @Component({
   selector: 'app-main-screen',
@@ -16,7 +17,8 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
     FormsModule,
     MatDrawer,
     MatDrawerContainer,
-    MatDrawerContent
+    MatDrawerContent,
+    SideCalcComponent
   ],
   styleUrls: ['./main-screen.component.css']
 })
@@ -24,6 +26,9 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
 export class MainScreenComponent {
   draggableElements: any[] = [];
   openDrawer :boolean = false;
+
+
+  
   constructor(private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService) { }
   addTable() {
     this.draggableElements.push({ label: 'Table', x: 0, y: 0 });

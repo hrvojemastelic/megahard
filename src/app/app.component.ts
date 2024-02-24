@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { SideCalcComponent } from './side-calc/side-calc.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -21,7 +22,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule ],
+    MatInputModule,SideCalcComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -35,7 +35,7 @@
   
 </div>
 
-<mat-grid-list cols="10" rowHeight="10:9">
+<mat-grid-list cols="12" rowHeight="10:10">
   <mat-grid-tile *ngFor="let item of items;let i = index"  >
     <div style="display: flex; flex-direction: column;">
       <mat-checkbox   (change)="toggleItemSelection(item)" [checked]="selectedItems.has(item)"></mat-checkbox>

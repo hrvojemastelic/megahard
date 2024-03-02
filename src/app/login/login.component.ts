@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -13,18 +14,25 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  constructor(private dataService: UserService,private router: Router) {}
+  user:User | undefined ;
+  constructor(private authService: AuthService,private router: Router) {
+
+    
+  }
 
   ngOnInit() {
+
   }
 
   // Example login function
   login() {
 
     
-    this.dataService.loginUser(this.username,this.password).subscribe(
+    this.authService.loginUser(this.username.trim(),this.password.trim()).subscribe(
       (response) => {
+        this.user = response["user"] as User;
         console.log('Login successful:', response);
+        console.log('Login successful:', this.user);
         // Handle the successful login response
         this.router.navigate(['/tabs-interface']);
       },

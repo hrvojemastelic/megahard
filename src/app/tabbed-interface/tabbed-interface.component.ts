@@ -11,6 +11,8 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { RegisterUserComponent } from '../register-user/register-user.component';
 
 export interface Tab {
   label: string;
@@ -27,6 +29,7 @@ export interface Tab {
     MatDrawer,
     MatDrawerContainer,
     MatDrawerContent,
+    RegisterUserComponent
     
   ],
   templateUrl: './tabbed-interface.component.html',
@@ -38,7 +41,8 @@ export class TabbedInterfaceComponent  {
   constructor(
     public tabbedInterfaceService: TabbedInterfaceService,
     public injector: Injector,
-    private router: Router 
+    private router: Router ,
+    private authService: AuthService
   ) {
 
   }
@@ -78,4 +82,14 @@ export class TabbedInterfaceComponent  {
     this.router.navigate(['/warehouse']);
   }
 
+  logout()
+  {
+    this.authService.logout();
+  }
+
+  register()
+  {
+    this.router.navigate(['/register']);
+
+  }
 }

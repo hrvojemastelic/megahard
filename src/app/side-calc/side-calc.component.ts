@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, Subject, map, startWith, takeUntil, timer } from 'rxjs';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { Item } from '../../models/item.model';
+import { ItemWarehouse } from '../../models/item-warehouse.model';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { WarehouseService } from '../../services/warehouse.service';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user.model';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-side-calc',
@@ -26,86 +31,56 @@ import { MatIcon } from '@angular/material/icon';
     MatIcon
   ]
 })
-export class SideCalcComponent {
+export class SideCalcComponent implements OnInit {
   searchTerm: string = '';
-  items : Item[] = [{category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-  {category:'piva',name:'žuja mala',value:2,quantity:120},
-  {category:'piva',name:'žuja velika',value:3,quantity:150},
-  {category:'piva',name:'lefe ',value:4,quantity:120},
-  {category:'piva',name:'grif mali',value:2,quantity:120},
-  {category:'piva',name:'grif veliki',value:3,quantity:120},
-  {category:'piva',name:'setlla',value:2,quantity:120},
-];
-  originalItems  : Item[] = [];
-  toPayList  : Item[] = [];
+  items : ItemWarehouse[] = [];
+  originalItems  : ItemWarehouse[] = [];
+  toPayList  : ItemWarehouse[] = [];
   selectedItem: any;
-  newItem: Item = { name: '', value: 0, quantity: 0 ,category:''};
+  newItem: ItemWarehouse = { name: '', value: 0, quantity: 0 ,category:''};
   totalValue: number = 0;
-
-
-  constructor()
+  user : User={ id: 0 };
+  private ngUnsubscribe = new Subject<void>();
+  constructor(private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
   {
-    this.originalItems= this.items;
+
+   
   }
+  ngOnInit(): void {
+  this.authService.getUserObservable()
+  .pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((user) => {
+    this.user = user;
+    if (user) {
+      const storedUser = this.authService.getUser();
+    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 }; 
+    this.getWarehouseList();
+      return true; // User is authenticated, allow access
+    } else {
+      // User is not authenticated, redirect to login page
+      return false;
+    }
+  });
+  }
+
+  getWarehouseList()
+  {
+    this.warehouseService.getWarehouseList(this.user.id)
+    .subscribe(
+      (response) => {
+        // Handle the response from the backend, if needed
+        this.items = response['items'] as ItemWarehouse[];
+        this.originalItems = [...this.items];
+        console.log('Insert successful', response);
+        // Clear the newAddedItems array after successful insert
+      },
+      (error) => {
+        // Handle any errors that occurred during the HTTP request
+        console.error('Error inserting data', error);
+      }
+    );
+  }
+ 
   searchItems() {
     if (this.searchTerm.trim() === '') {
       // If the search term is empty, reset the items array to the original state
@@ -152,5 +127,10 @@ calculateTotalValue() {
 deleteItem()
 {
 
+}
+
+ngOnDestroy(): void {
+  this.ngUnsubscribe.next();
+  this.ngUnsubscribe.complete();
 }
 }

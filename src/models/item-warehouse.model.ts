@@ -1,4 +1,4 @@
-export interface Item {
+export interface ItemWarehouse {
     name: string;
     value: number;
     quantity: number;

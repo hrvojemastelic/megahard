@@ -1,0 +1,16 @@
+<!-- registration.component.html -->
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <input matInput placeholder="Username" formControlName="username" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="password" placeholder="Password" formControlName="password" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="email" placeholder="Email" formControlName="email" required>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Register</button>
+</form>

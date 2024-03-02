@@ -1,4 +1,4 @@
-import { Item } from "./item.model";
+import { ItemWarehouse } from "./item-warehouse.model";
 
 export interface Customer {
     id:number;
@@ -6,7 +6,7 @@ export interface Customer {
     toPay: number;
     quantity: number;
     category:number;
-    items:Item[];
+    items:ItemWarehouse[];
     x:number;
     y:number;
   }

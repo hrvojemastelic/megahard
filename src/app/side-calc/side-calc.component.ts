@@ -37,8 +37,9 @@ export class SideCalcComponent implements OnInit {
   originalItems  : ItemWarehouse[] = [];
   toPayList  : ItemWarehouse[] = [];
   selectedItem: any;
-  newItem: ItemWarehouse = { name: '', value: 0, quantity: 0 ,category:''};
+  newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:''};
   totalValue: number = 0;
+  totalValueDisplay: string='';
   user : User={ id: 0 };
   private ngUnsubscribe = new Subject<void>();
   constructor(private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
@@ -69,9 +70,13 @@ export class SideCalcComponent implements OnInit {
     .subscribe(
       (response) => {
         // Handle the response from the backend, if needed
-        this.items = response['items'] as ItemWarehouse[];
-        this.originalItems = [...this.items];
-        console.log('Insert successful', response);
+        if(response['items'])
+        {
+          this.items = response['items'] as ItemWarehouse[];
+          this.originalItems = [...this.items];
+          console.log('Insert successful', response);
+        }
+
         // Clear the newAddedItems array after successful insert
       },
       (error) => {
@@ -106,29 +111,68 @@ export class SideCalcComponent implements OnInit {
   }
   
   clearInputs() {
-    this.newItem = { name: '', value: 0, quantity: 0, category: '' };
+    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' };
   }
 
 
-onMouseEnter(item: any) {
+onMouseEnter(item: ItemWarehouse) {
   this.selectedItem = item;
 }
 
-addToToPayList(item: any) {
-  // Add logic to add the clicked item to the toPayList
-  this.toPayList.push(item);
-  this.calculateTotalValue();
+addToToPayList(item: ItemWarehouse) {
+  // Check if the item with the same ID already exists in the toPayList
+  const isItemAlreadyAdded = this.toPayList.some((payListItem) => payListItem.id === item.id);
+
+  if (!isItemAlreadyAdded) {
+    // If the item is not already in the toPayList, add it
+    this.toPayList.push(item);
+    this.calculateTotalValue();
+  } else {
+    // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
+    console.log('Item with ID', item.id, 'is already in the toPayList');
+    // You can add further logic or UI feedback here
+  }
 }
+
 
 calculateTotalValue() {
-  this.totalValue = this.toPayList.reduce((total, item) => total + item.value, 0);
+  try {
+    this.totalValue = this.toPayList.reduce((total, item) => total + parseFloat(item.value.toString()), 0);
+
+    // Check if this.totalValue is a number before using toFixed
+    if (typeof this.totalValue === 'number' && !isNaN(this.totalValue)) {
+      this.totalValueDisplay = this.totalValue.toFixed(2);
+    } else {
+      // Handle the case where this.totalValue is not a valid number
+      console.error("Error: this.totalValue is not a valid number after reduce:", this.totalValue);
+      this.totalValueDisplay = ''; // or provide a default value
+    }
+  } catch (error) {
+    // Log the error for further investigation
+    console.error("Error in calculateTotalValue:", error);
+  }
+  console.log(`Total: ${this.totalValue} €`);
+
 }
 
-deleteItem()
-{
-
+incrementQuantity(item: ItemWarehouse) {
+  item.quantity += 1;
+  this.totalValue += item.value; 
+  this.calculateTotalValue() // Add the value of the item to the total
 }
 
+decrementQuantity(item: ItemWarehouse) {
+  if (item.quantity > 1) {
+    item.quantity -= 1;
+    this.totalValue -= item.value;  
+    this.calculateTotalValue()// Subtract the value of the item from the total
+  }
+}
+
+deleteItem(index: number) {
+  this.toPayList.splice(index, 1);
+  this.calculateTotalValue(); // Recalculate total value after the change
+}
 ngOnDestroy(): void {
   this.ngUnsubscribe.next();
   this.ngUnsubscribe.complete();

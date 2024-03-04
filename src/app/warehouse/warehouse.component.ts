@@ -32,7 +32,7 @@ import { AuthService } from '../../services/auth.service';
   ],
 })
 export class WarehouseComponent  implements OnInit {
-  newItem: ItemWarehouse = { name: '', value: 0, quantity: 0 ,category:''};
+  newItem: ItemWarehouse = {id:0, name: '', value: 0, quantity: 0 ,category:''};
   searchTerm: string = '';
   items: ItemWarehouse[] = [];
   originalItems: ItemWarehouse[] = [];
@@ -51,9 +51,13 @@ export class WarehouseComponent  implements OnInit {
     .subscribe(
       (response) => {
         // Handle the response from the backend, if needed
-        this.items = response['items'] as ItemWarehouse[];
-        this.originalItems = [...this.items];
-        console.log('Insert successful', response);
+        if(response['items'])
+        {
+          this.items = response['items'] as ItemWarehouse[];
+          this.originalItems = [...this.items];
+          console.log('Insert successful', response);
+        }
+
         // Clear the newAddedItems array after successful insert
       },
       (error) => {
@@ -64,10 +68,6 @@ export class WarehouseComponent  implements OnInit {
 
   }
 
-  getWarehouseList()
-  {
-
-  }
 
   
   addItem() {
@@ -106,7 +106,7 @@ export class WarehouseComponent  implements OnInit {
   }
   
   clearInputs() {
-    this.newItem = { name: '', value: 0, quantity: 0, category: '' };
+    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' };
   }
   toggleItemSelection(item: ItemWarehouse) {
     if (this.selectedItems.has(item)) {

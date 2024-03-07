@@ -17,6 +17,8 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../../services/config.service';
+import { SideCalcService } from '../../services/side-calc.service';
+import { Customer } from '../../models/customer.model';
 
 @Component({
   selector: 'app-side-calc',
@@ -42,12 +44,17 @@ export class SideCalcComponent implements OnInit {
   totalValueDisplay: string='';
   user : User={ id: 0 };
   private ngUnsubscribe = new Subject<void>();
-  constructor(private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
+  customerData!: Customer; 
+
+
+
+  constructor(private sideCalcService:SideCalcService,private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
   {
 
    
   }
   ngOnInit(): void {
+
   this.authService.getUserObservable()
   .pipe(takeUntil(this.ngUnsubscribe))
   .subscribe((user) => {
@@ -61,6 +68,11 @@ export class SideCalcComponent implements OnInit {
       // User is not authenticated, redirect to login page
       return false;
     }
+  });
+
+  this.sideCalcService.customerData$.subscribe(updatedData => {
+    // Handle the updated data here
+    this.customerData = updatedData;
   });
   }
 
@@ -121,11 +133,14 @@ onMouseEnter(item: ItemWarehouse) {
 
 addToToPayList(item: ItemWarehouse) {
   // Check if the item with the same ID already exists in the toPayList
-  const isItemAlreadyAdded = this.toPayList.some((payListItem) => payListItem.id === item.id);
+  console.log(this.customerData);
+  
+  const isItemAlreadyAdded = this.customerData.items.some((payListItem) => payListItem.id === item.id);
 
   if (!isItemAlreadyAdded) {
     // If the item is not already in the toPayList, add it
     this.toPayList.push(item);
+    this.customerData.items.push(item);
     this.calculateTotalValue();
   } else {
     // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
@@ -171,6 +186,7 @@ decrementQuantity(item: ItemWarehouse) {
 
 deleteItem(index: number) {
   this.toPayList.splice(index, 1);
+  this.customerData.items.splice(index, 1);
   this.calculateTotalValue(); // Recalculate total value after the change
 }
 ngOnDestroy(): void {

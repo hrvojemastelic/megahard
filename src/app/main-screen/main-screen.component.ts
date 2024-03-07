@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkDrag } from '@angular/cdk/drag-drop';
@@ -8,6 +8,7 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { TabbedInterfaceService } from '../../services/tsbs.service';
 import { SideCalcComponent } from '../side-calc/side-calc.component';
 import { Customer } from '../../models/customer.model';
+import { SideCalcService } from '../../services/side-calc.service';
 
 @Component({
   selector: 'app-main-screen',
@@ -24,13 +25,19 @@ import { Customer } from '../../models/customer.model';
   styleUrls: ['./main-screen.component.css']
 })
 
-export class MainScreenComponent{
+export class MainScreenComponent implements OnInit{
   draggableElements: Customer[] = [];
   openDrawer :boolean = false;
 
 
   
-  constructor(private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService) { }
+  constructor(private sideCalcService:SideCalcService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService) { }
+  ngOnInit(): void {
+    this.sideCalcService.customerData$.subscribe(updatedData => {
+      // Handle the updated data here
+      console.log('Data updated in source component:', updatedData);
+    });
+  }
 
 
 
@@ -41,20 +48,17 @@ export class MainScreenComponent{
   addGuest() {
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Guest', toPay: 0, quantity: 0, category: 2, items: [], x: 0, y: 0 });
   }
-  toggleDrawer() {
+  toggleDrawer(customer:any) {
+    this.sideCalcService.setCustomerData(customer);
     if(!this.openDrawer)
     {
       this.openDrawer = true;
       this.tabbedInterfaceService.openDrawer();
+    
       console.log(this.draggableElements);
       
     }
-    else
-    {
-      this.openDrawer = false;
-      this.tabbedInterfaceService.closeDrawer();
-
-    }
+ 
   }
    savePosition() {
     this.cdr.detectChanges(); // Trigger change detection to make sure ngModel is updated

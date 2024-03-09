@@ -77,6 +77,7 @@ export class SideCalcComponent implements OnInit {
     if(this.customerData)
     {
       this.customerName = this.customerData.name;
+      this.calculateTotalValue();
     }
   });
   }
@@ -157,7 +158,7 @@ addToToPayList(item: ItemWarehouse) {
 
 calculateTotalValue() {
   try {
-    this.totalValue = this.toPayList.reduce((total, item) => total + parseFloat(item.value.toString()), 0);
+    this.totalValue = this.customerData.items.reduce((total, item) => total + parseFloat(item.value.toString()), 0);
 
     // Check if this.totalValue is a number before using toFixed
     if (typeof this.totalValue === 'number' && !isNaN(this.totalValue)) {

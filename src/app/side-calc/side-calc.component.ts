@@ -140,7 +140,8 @@ onMouseEnter(item: ItemWarehouse) {
 addToToPayList(item: ItemWarehouse) {
   // Check if the item with the same ID already exists in the toPayList
   console.log(this.customerData);
-  
+  if(this.customerData)
+  {
   const isItemAlreadyAdded = this.customerData.items.some((payListItem) => payListItem.id === item.id);
 
   if (!isItemAlreadyAdded) {
@@ -148,15 +149,21 @@ addToToPayList(item: ItemWarehouse) {
     this.toPayList.push(item);
     this.customerData.items.push(item);
     this.calculateTotalValue();
+  
+    
   } else {
     // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
     console.log('Item with ID', item.id, 'is already in the toPayList');
     // You can add further logic or UI feedback here
   }
 }
+}
 
 
 calculateTotalValue() {
+  if(this.customerData)
+  {
+
   try {
     this.totalValue = this.customerData.items.reduce((total, item) => total + parseFloat(item.value.toString()), 0);
 
@@ -172,8 +179,9 @@ calculateTotalValue() {
     // Log the error for further investigation
     console.error("Error in calculateTotalValue:", error);
   }
-  console.log(`Total: ${this.totalValue} €`);
-
+  this.customerData.toPay = this.totalValue;
+  console.log(this.customerData.toPay);
+  }
 }
 
 incrementQuantity(item: ItemWarehouse) {

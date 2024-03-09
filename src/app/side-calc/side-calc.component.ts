@@ -45,6 +45,7 @@ export class SideCalcComponent implements OnInit {
   user : User={ id: 0 };
   private ngUnsubscribe = new Subject<void>();
   customerData!: Customer; 
+  customerName : string = '';
 
 
 
@@ -73,6 +74,10 @@ export class SideCalcComponent implements OnInit {
   this.sideCalcService.customerData$.subscribe(updatedData => {
     // Handle the updated data here
     this.customerData = updatedData;
+    if(this.customerData)
+    {
+      this.customerName = this.customerData.name;
+    }
   });
   }
 

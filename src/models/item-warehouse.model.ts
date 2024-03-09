@@ -4,4 +4,5 @@ export interface ItemWarehouse {
     value: number;
     quantity: number;
     category:string;
+    qToPay:number;
   }

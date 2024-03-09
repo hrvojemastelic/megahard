@@ -30,11 +30,11 @@
                   <span>({{ item.value }} €)</span>
                 </div>
                 <div style="display: flex; align-items: center;">
-                  <button mat-icon-button (click)="decrementQuantity(item)">
+                  <button mat-icon-button (click)="decrementQuantity(item,i)">
                     <mat-icon>remove</mat-icon>
                   </button>
-                  <span style="margin: 0 4px;">{{ item.quantity }}</span>
-                  <button mat-icon-button (click)="incrementQuantity(item)">
+                  <span style="margin: 0 4px;">{{ item.qToPay }}</span>
+                  <button mat-icon-button (click)="incrementQuantity(item,i)">
                     <mat-icon>add</mat-icon>
                   </button>
                   <button mat-button (click)="deleteItem(i)">

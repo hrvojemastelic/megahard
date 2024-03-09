@@ -32,7 +32,7 @@ import { AuthService } from '../../services/auth.service';
   ],
 })
 export class WarehouseComponent  implements OnInit {
-  newItem: ItemWarehouse = {id:0, name: '', value: 0, quantity: 0 ,category:''};
+  newItem: ItemWarehouse = {id:0, name: '', value: 0, quantity: 0 ,category:'',qToPay:1};
   searchTerm: string = '';
   items: ItemWarehouse[] = [];
   originalItems: ItemWarehouse[] = [];
@@ -106,7 +106,7 @@ export class WarehouseComponent  implements OnInit {
   }
   
   clearInputs() {
-    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' };
+     this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '',qToPay:1 };
   }
   toggleItemSelection(item: ItemWarehouse) {
     if (this.selectedItems.has(item)) {

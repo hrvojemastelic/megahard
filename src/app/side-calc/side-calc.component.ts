@@ -39,7 +39,7 @@ export class SideCalcComponent implements OnInit {
   originalItems  : ItemWarehouse[] = [];
   toPayList  : ItemWarehouse[] = [];
   selectedItem: any;
-  newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:''};
+  newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:'',qToPay:1};
   totalValue: number = 0;
   totalValueDisplay: string='';
   user : User={ id: 0 };
@@ -129,7 +129,7 @@ export class SideCalcComponent implements OnInit {
   }
   
   clearInputs() {
-    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' };
+    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' ,qToPay:1};
   }
 
 
@@ -165,8 +165,10 @@ calculateTotalValue() {
   {
 
   try {
-    this.totalValue = this.customerData.items.reduce((total, item) => total + parseFloat(item.value.toString()), 0);
-
+    this.totalValue = this.customerData.items.reduce((total, item) => {
+      const quantity = item.qToPay || 1; // Use qToPay if available, or default to 1
+      return total + parseFloat(item.value.toString()) * quantity;
+    }, 0);
     // Check if this.totalValue is a number before using toFixed
     if (typeof this.totalValue === 'number' && !isNaN(this.totalValue)) {
       this.totalValueDisplay = this.totalValue.toFixed(2);
@@ -184,22 +186,28 @@ calculateTotalValue() {
   }
 }
 
-incrementQuantity(item: ItemWarehouse) {
-  item.quantity += 1;
-  this.totalValue += item.value; 
-  this.calculateTotalValue() // Add the value of the item to the total
+incrementQuantity(item: ItemWarehouse,index:number) {
+  console.log("Before increment - qToPay:", item.qToPay, "value:", item.value);
+  this.customerData.items[index].qToPay = (item.qToPay || 0) + 1; 
+  this.calculateTotalValue();
+
+  console.log("After increment - qToPay:", item.qToPay, "totalValue:", this.totalValue);
 }
 
-decrementQuantity(item: ItemWarehouse) {
-  if (item.quantity > 1) {
-    item.quantity -= 1;
-    this.totalValue -= item.value;  
-    this.calculateTotalValue()// Subtract the value of the item from the total
+decrementQuantity(item: ItemWarehouse,index:number) {
+  console.log("Before decrement - qToPay:", item.qToPay, "value:", item.value);
+
+  if (item.qToPay > 1) {
+    this.customerData.items[index].qToPay =  item.qToPay -= 1;
+    this.calculateTotalValue();
+
+    console.log("After decrement - qToPay:", item.qToPay, "totalValue:", this.totalValue);
   }
 }
 
 deleteItem(index: number) {
   this.toPayList.splice(index, 1);
+  this.customerData.items[index].qToPay = 1;
   this.customerData.items.splice(index, 1);
   this.calculateTotalValue(); // Recalculate total value after the change
 }

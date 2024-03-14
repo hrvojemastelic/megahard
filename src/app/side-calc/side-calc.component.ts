@@ -28,7 +28,7 @@ import { Customer } from '../../models/customer.model';
   imports: [CommonModule, MatSelectModule,
     NgxMatSelectSearchModule,ReactiveFormsModule,MatInput,MatInputModule,
     FormsModule,
-    MatGridListModule,    
+    MatGridListModule,
     MatButtonModule,
     MatIcon
   ]
@@ -39,12 +39,12 @@ export class SideCalcComponent implements OnInit {
   originalItems  : ItemWarehouse[] = [];
   toPayList  : ItemWarehouse[] = [];
   selectedItem: any;
-  newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:'',qToPay:1};
+  newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:0,qToPay:1};
   totalValue: number = 0;
   totalValueDisplay: string='';
   user : User={ id: 0 };
   private ngUnsubscribe = new Subject<void>();
-  customerData!: Customer; 
+  customerData!: Customer;
   customerName : string = '';
 
 
@@ -52,7 +52,7 @@ export class SideCalcComponent implements OnInit {
   constructor(private sideCalcService:SideCalcService,private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
   {
 
-   
+
   }
   ngOnInit(): void {
 
@@ -62,7 +62,7 @@ export class SideCalcComponent implements OnInit {
     this.user = user;
     if (user) {
       const storedUser = this.authService.getUser();
-    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 }; 
+    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
     this.getWarehouseList();
       return true; // User is authenticated, allow access
     } else {
@@ -103,7 +103,7 @@ export class SideCalcComponent implements OnInit {
       }
     );
   }
- 
+
   searchItems() {
     if (this.searchTerm.trim() === '') {
       // If the search term is empty, reset the items array to the original state
@@ -111,25 +111,25 @@ export class SideCalcComponent implements OnInit {
       this.clearInputs();
       return;
     }
-  
+
     // Convert the search term to lowercase for case-insensitive search
     const searchTermLowerCase = this.searchTerm.toLowerCase();
-  
+
     // Filter items based on the search term
     this.items = this.originalItems.filter((item) =>
       item.name.toLowerCase().includes(searchTermLowerCase)
     );
   }
-  
+
   resetSearch() {
     this.searchTerm = '';
     // Reset the items array to the original state
     this.items = [...this.originalItems];
     this.clearInputs();
   }
-  
+
   clearInputs() {
-    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: '' ,qToPay:1};
+    this.newItem = { id:0,name: '', value: 0, quantity: 0, category: 0 ,qToPay:1};
   }
 
 
@@ -149,8 +149,8 @@ addToToPayList(item: ItemWarehouse) {
     this.toPayList.push(item);
     this.customerData.items.push(item);
     this.calculateTotalValue();
-  
-    
+
+
   } else {
     // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
     console.log('Item with ID', item.id, 'is already in the toPayList');
@@ -188,7 +188,7 @@ calculateTotalValue() {
 
 incrementQuantity(item: ItemWarehouse,index:number) {
   console.log("Before increment - qToPay:", item.qToPay, "value:", item.value);
-  this.customerData.items[index].qToPay = (item.qToPay || 0) + 1; 
+  this.customerData.items[index].qToPay = (item.qToPay || 0) + 1;
   this.calculateTotalValue();
 
   console.log("After increment - qToPay:", item.qToPay, "totalValue:", this.totalValue);

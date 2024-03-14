@@ -30,7 +30,7 @@ export interface Tab {
     MatDrawerContainer,
     MatDrawerContent,
     RegisterUserComponent
-    
+
   ],
   templateUrl: './tabbed-interface.component.html',
   styleUrl: './tabbed-interface.component.css'
@@ -44,12 +44,15 @@ export class TabbedInterfaceComponent  {
     private router: Router ,
     private authService: AuthService
   ) {
+    this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
+      this.openDrawer = value;
 
+    });
   }
   addNewTab() {
     const label = 'Prostorija ' + this.tabbedInterfaceService.tabs.length;
     const mainScreenInstance = this.tabbedInterfaceService.createComponentInstance(MainScreenComponent);
-    
+
     // You can pass inputs to your component if needed
     // mainScreenInstance.instance.someInput = someValue;
 

@@ -10,7 +10,7 @@ import { TabbedInterfaceComponent } from '../app/tabbed-interface/tabbed-interfa
 export class TabbedInterfaceService {
   tabs: { label: string; content: Type<any> }[] = [];
   drawerOpen$ = new EventEmitter<boolean>();
-
+  drawerState : boolean = false;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver, private injector: Injector) {}
 
@@ -20,20 +20,26 @@ export class TabbedInterfaceService {
 
   createComponentInstance(component: Type<any>) {
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-    
+
     // Provide an Injector instance when creating the component
     return factory.create(this.injector);
   }
   openDrawer() {
     console.log("open");
+    this.drawerState = true;
     this.drawerOpen$.emit(true);
 
-    
+
   }
 
   closeDrawer() {
     console.log("close");
+    this.drawerState = false;
     this.drawerOpen$.emit(false);
+  }
+  getDrawerState()
+  {
+    return this.drawerState;
   }
 
   createTabbedInterfaceComponentInstance() {

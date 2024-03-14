@@ -30,17 +30,21 @@ export class MainScreenComponent implements OnInit{
   openDrawer :boolean = false;
 
 
-  
-  constructor(private sideCalcService:SideCalcService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService) { }
+
+  constructor(private sideCalcService:SideCalcService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService)
+   {
+    this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
+      this.openDrawer = value;
+
+    });
+    }
+
   ngOnInit(): void {
     this.sideCalcService.customerData$.subscribe(updatedData => {
       // Handle the updated data here
       console.log('Data updated in source component:', updatedData);
     });
   }
-
-
-
   addTable() {
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Table', toPay: 0, quantity: 0, category: 1, items: [], x: 0, y: 0 });
   }
@@ -54,11 +58,12 @@ export class MainScreenComponent implements OnInit{
     {
       this.openDrawer = true;
       this.tabbedInterfaceService.openDrawer();
-    
-      console.log(this.draggableElements);
-      
     }
- 
+    else
+    {
+      this.openDrawer = false;
+      this.tabbedInterfaceService.closeDrawer();
+    }
   }
    savePosition() {
     this.cdr.detectChanges(); // Trigger change detection to make sure ngModel is updated

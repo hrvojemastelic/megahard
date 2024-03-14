@@ -13,11 +13,12 @@
         <mat-grid-list cols="3" rowHeight="20:10">
           <mat-grid-tile *ngFor="let item of items; let i = index" (mouseenter)="onMouseEnter(item)" (click)="addToToPayList(item)">
             <div style="height: 100%; width: 100%; display: flex; flex-direction: column; cursor: pointer;" [ngClass]="{'selected-item': selectedItem === item}">
-              <span style="width: 100%; margin-left: 4px;"> {{ item.name }}</span>
-              <span style=" width: 100%;margin-left: 4px;"> ( {{ item.value }} €)</span>
+              <span style="width: 100%; margin-left: 4px; font-size: small; flex-shrink: 0;"><b>{{ item.name }}</b></span>
+              <span style="width: 100%; margin-left: 4px; font-size: small; flex-shrink: 0;">({{ item.value }} €)</span>
             </div>
           </mat-grid-tile>
         </mat-grid-list>
+        
       </th>
       <th style="width: 50%; vertical-align: top;">
         <h1>{{customerName}}</h1>

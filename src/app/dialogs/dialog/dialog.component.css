@@ -1,0 +1,23 @@
+.custom-dialog {
+  width: 50%; /* adjust width as needed */
+  height: 50%; /* adjust height as needed */
+}
+.mat-dialog-actions.custom-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Align items to the bottom */
+  margin-top: 20px; /* Add margin to the top to separate from dialog content */
+}
+
+.mat-dialog-actions.custom-actions .spacer {
+  flex-grow: 1;
+}
+
+.mat-dialog-actions.custom-actions .left-button {
+  margin-right: 10px; /* Add spacing to the right */
+}
+
+.mat-dialog-actions.custom-actions .right-button {
+  margin-left: 10px; /* Add spacing to the left */
+}
+

@@ -26,6 +26,9 @@ import {
 import { DialogService } from '../../services/dialog.service';
 import { Category } from '../../models/category.model';
 import { Router } from '@angular/router';
+import { SideCalcService } from '../../services/side-calc.service';
+import { Subscription } from 'rxjs';
+import { TabbedInterfaceService } from '../../services/tsbs.service';
 @Component({
   selector: 'app-warehouse',
   templateUrl: './warehouse.component.html',
@@ -53,39 +56,31 @@ export class WarehouseComponent  implements OnInit {
   addCategoryValue!: Category ;
   searchCategoryValue!: number ;
   searchCategory: Category[] = [{ name:'Topli napitci',id:1},{name:'Bezalkoholna pića',id:2},{name:'Alkoholna pića',id:3},{name:'Miješana alk. pića',id:4},{name:'Pivo',id:5},{name:'Točeno pivo',id:6}];
+  closeWarehouseDrawer : boolean=false;
+  private originalItemsSubscription: Subscription;
 
-  cars: string[] = [];
+
   constructor(private warehouseService:WarehouseService,
     private authService: AuthService,
     public dialog: MatDialog,
     private dialogService: DialogService,
-    private router: Router) {
+    private router: Router,
+    private sideCalcService: SideCalcService,
+    private tabbedInterfaceService:TabbedInterfaceService) {
     // Initialize the originalItems with a copy of the initial items array
-    this.originalItems = [...this.items];
+    this.originalItemsSubscription = this.sideCalcService.originalItems$.subscribe(items => {
+      this.originalItems = items;
+      this.items = items
+
+    });
+    this.tabbedInterfaceService.drawerOpenWarehouse$.subscribe((value) => {
+      this.closeWarehouseDrawer = value;
+
+    });
   }
   ngOnInit(): void {
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
-    console.log(this.user);
-    // Default value or appropriate default
-    this.warehouseService.getWarehouseList(this.user.id)
-    .subscribe(
-      (response) => {
-        // Handle the response from the backend, if needed
-        if(response['items'])
-        {
-          this.items = response['items'] as ItemWarehouse[];
-          this.originalItems = [...this.items];
-          console.log('Insert successful', response);
-        }
-
-        // Clear the newAddedItems array after successful insert
-      },
-      (error) => {
-        // Handle any errors that occurred during the HTTP request
-        console.error('Error inserting data', error);
-      }
-    );
 
   }
 
@@ -150,7 +145,6 @@ export class WarehouseComponent  implements OnInit {
   {
     //TODO ADD ITEMS FROM LIST CHECK ORIGINAL LIST AND ITEM LIST IF EVERYTHING IS OK
     const id = this.user.id;
-    console.log(id);
     if(isDelete && id !== undefined && id !== null)
     {
       this.warehouseService.insert(this.items,id)
@@ -200,20 +194,17 @@ export class WarehouseComponent  implements OnInit {
 
     if (this.searchCategoryValue) {
       // Filter items based on the selected category
-      console.log(this.searchCategoryValue);
       this.items = this.originalItems.filter((item) => item.category === this.searchCategoryValue);
     }
   }
 
   onCategoryChange() {
-    console.log('onChange');
-
     this.searchItems(); // Call searchItems() when the category select changes
   }
 
   back()
   {
-    this.router.navigate(['/tabs-interface']);
-
+      this.closeWarehouseDrawer = false;
+      this.tabbedInterfaceService.closeDrawerWarehouse();
   }
 }

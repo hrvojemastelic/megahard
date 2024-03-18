@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Customer } from '../models/customer.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ItemWarehouse } from '../models/item-warehouse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,8 @@ import { BehaviorSubject } from 'rxjs';
 export class SideCalcService {
   private customerDataSubject = new BehaviorSubject<any>(null); // replace 'any' with your Customer object type
   customerData$ = this.customerDataSubject.asObservable();
+  private originalItemsSubject: BehaviorSubject<ItemWarehouse[]> = new BehaviorSubject<ItemWarehouse[]>([]);
+  public originalItems$: Observable<ItemWarehouse[]> = this.originalItemsSubject.asObservable();
 
 constructor() { }
 
@@ -17,5 +20,9 @@ setCustomerData(data: any) {
 
 getCustomerData() {
   return this.customerDataSubject.value;
+}
+
+updateOriginalItems(items: ItemWarehouse[]): void {
+  this.originalItemsSubject.next(items);
 }
 }

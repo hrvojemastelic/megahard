@@ -1,13 +1,16 @@
 
 <mat-sidenav-container class="example-container">
     <mat-sidenav #sidenav mode="side" [(opened)]="opened" style="width: 50%;">
-      <app-side-calc></app-side-calc>    
+      <app-side-calc></app-side-calc>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content style="width: 100%;">
         <router-outlet></router-outlet>
 
     </mat-sidenav-content>
 
+    <mat-sidenav #warehouseSidenav position="end" mode="side" [(opened)]="showWarehouse" style="width: 100%"> <!-- Adjust width as needed -->
+      <app-warehouse></app-warehouse>
+    </mat-sidenav>
   </mat-sidenav-container>
 

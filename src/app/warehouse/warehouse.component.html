@@ -2,27 +2,27 @@
 
 <div class="header" style="color:white; background-color:blueviolet;" >
   <button mat-raised-button color="primary" style="margin-left: 10px;" (click)="back()" >Natrag</button>
-  <h2 style="padding-top: 7px;padding-left: 15px;">Warehouse</h2>
+  <h2 style="padding-top: 7px;padding-left: 15px;">Skladište</h2>
   <div class="delete-button-container">
 
 
-    <button mat-raised-button color="primary" (click)="insert(false)" >Save</button>
-    <button mat-raised-button color="warn" (click)="openYesNoDialog()" >Delete</button>
+    <button mat-raised-button color="primary" (click)="insert(false)" >Spremi</button>
+    <button mat-raised-button color="warn" (click)="openYesNoDialog()" >Obriši</button>
   </div>
 </div>
 
 <div class="input-container">
   <div class="input-group">
     <mat-form-field>
-      <input matInput [(ngModel)]="newItem.name" placeholder="Name" />
+      <input matInput [(ngModel)]="newItem.name" placeholder="Ime" />
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [(ngModel)]="newItem.value" placeholder="Value €" />
+      <input matInput [(ngModel)]="newItem.value" placeholder="Cijena €" />
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [(ngModel)]="newItem.quantity" placeholder="Quantity" />
+      <input matInput [(ngModel)]="newItem.quantity" placeholder="Stanje" />
     </mat-form-field>
 
     <mat-form-field style="margin-left: 5px;">
@@ -34,7 +34,7 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addItem()">Add Item</button>
+    <button mat-raised-button color="primary" (click)="addItem()">Dodaj</button>
   </div>
 
   <div class="input-group">
@@ -49,8 +49,8 @@
         }
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="searchItems()">Search</button>
-    <button mat-raised-button color="warn" (click)="resetSearch()">Reset Search</button>
+    <button mat-raised-button color="primary" (click)="searchItems()">Traži</button>
+    <button mat-raised-button color="warn" (click)="resetSearch()">Reset Tražilice</button>
 
   </div>
 

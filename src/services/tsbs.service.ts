@@ -11,6 +11,8 @@ export class TabbedInterfaceService {
   tabs: { label: string; content: Type<any> }[] = [];
   drawerOpen$ = new EventEmitter<boolean>();
   drawerState : boolean = false;
+  drawerOpenWarehouse$ = new EventEmitter<boolean>();
+  drawerStateWarehouse : boolean = false;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver, private injector: Injector) {}
 
@@ -44,5 +46,23 @@ export class TabbedInterfaceService {
 
   createTabbedInterfaceComponentInstance() {
     return this.createComponentInstance(TabbedInterfaceComponent);
+  }
+
+  openDrawerWarehouse() {
+    console.log("open");
+    this.drawerStateWarehouse = true;
+    this.drawerOpenWarehouse$.emit(true);
+
+
+  }
+
+  closeDrawerWarehouse() {
+    console.log("close");
+    this.drawerStateWarehouse = false;
+    this.drawerOpenWarehouse$.emit(false);
+  }
+  getDrawerStateWarehouse()
+  {
+    return this.drawerStateWarehouse;
   }
 }

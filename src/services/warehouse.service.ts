@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { ItemWarehouse } from '../models/item-warehouse.model';
   providedIn: 'root'
 })
 export class WarehouseService {
+
 
 constructor(    private http: HttpClient,
   private configService: ConfigService) { }
@@ -23,7 +24,7 @@ constructor(    private http: HttpClient,
     // Adjust the endpoint and request type based on your backend implementation
     return this.http.post(`${this.backendUrl}/api/warehouse/getList`, credentials);
   }
-  
+
   insert(itemList:ItemWarehouse[],userId:number):Observable<any>
   {
     const credentials = {
@@ -33,5 +34,6 @@ constructor(    private http: HttpClient,
     return this.http.post(`${this.backendUrl}/api/warehouse/insert`, credentials);
 
   }
+
 
 }

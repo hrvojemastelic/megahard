@@ -14,6 +14,7 @@ import { SideCalcComponent } from './side-calc/side-calc.component';
 import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
+import { WarehouseComponent } from './warehouse/warehouse.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -25,7 +26,7 @@ import { Subject, takeUntil } from 'rxjs';
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule,SideCalcComponent ],
+    MatInputModule,SideCalcComponent,WarehouseComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -33,12 +34,18 @@ export class AppComponent {
   title = 'megahard';
   opened: boolean =false;
   user!: User;
+  showWarehouse = false;
   private ngUnsubscribe = new Subject<void>();
 
   constructor(private router: Router,public tabbedInterfaceService: TabbedInterfaceService,private authService: AuthService) {
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.opened = value;
-      
+
+    });
+
+    this.tabbedInterfaceService.drawerOpenWarehouse$.subscribe((value) => {
+      this.showWarehouse = value;
+
     });
 
     this.authService.getUserObservable()

@@ -38,6 +38,7 @@ export interface Tab {
 
 export class TabbedInterfaceComponent  {
   openDrawer :boolean = false;
+  openDrawerWarehouse :boolean = false;
   constructor(
     public tabbedInterfaceService: TabbedInterfaceService,
     public injector: Injector,
@@ -45,6 +46,10 @@ export class TabbedInterfaceComponent  {
     private authService: AuthService
   ) {
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
+      this.openDrawer = value;
+
+    });
+    this.tabbedInterfaceService.drawerOpenWarehouse$.subscribe((value) => {
       this.openDrawer = value;
 
     });
@@ -82,7 +87,8 @@ export class TabbedInterfaceComponent  {
 
   openWarehouse()
   {
-    this.router.navigate(['/warehouse']);
+      this.openDrawerWarehouse = true;
+      this.tabbedInterfaceService.openDrawerWarehouse();
   }
 
   logout()

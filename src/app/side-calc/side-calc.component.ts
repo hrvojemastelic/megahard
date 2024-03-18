@@ -64,6 +64,7 @@ export class SideCalcComponent implements OnInit {
       const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
     this.getWarehouseList();
+
       return true; // User is authenticated, allow access
     } else {
       // User is not authenticated, redirect to login page
@@ -74,6 +75,8 @@ export class SideCalcComponent implements OnInit {
   this.sideCalcService.customerData$.subscribe(updatedData => {
     // Handle the updated data here
     this.customerData = updatedData;
+    console.log(this.customerData);
+
     if(this.customerData)
     {
       this.customerName = this.customerData.name;
@@ -92,6 +95,7 @@ export class SideCalcComponent implements OnInit {
         {
           this.items = response['items'] as ItemWarehouse[];
           this.originalItems = [...this.items];
+          this.sideCalcService.updateOriginalItems(this.originalItems);
           console.log('Insert successful', response);
         }
 
@@ -143,11 +147,21 @@ addToToPayList(item: ItemWarehouse) {
   if(this.customerData)
   {
   const isItemAlreadyAdded = this.customerData.items.some((payListItem) => payListItem.id === item.id);
+    // Find the index of the corresponding item in the originalItems list based on its ID
+    const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+
+    // If the original item is found, decrement its quantity
+    if (originalItemIndex !== -1) {
+      this.originalItems[originalItemIndex].quantity -= 1;
+    }
+    this.sideCalcService.updateOriginalItems(this.originalItems);
+    console.log(this.originalItems);
 
   if (!isItemAlreadyAdded) {
-    // If the item is not already in the toPayList, add it
-    this.toPayList.push(item);
-    this.customerData.items.push(item);
+    // Create a deep copy of the item to ensure it's a new instance
+    const newItem = { ...item };
+    this.toPayList.push(newItem);
+    this.customerData.items.push(newItem);
     this.calculateTotalValue();
 
 
@@ -187,25 +201,47 @@ calculateTotalValue() {
 }
 
 incrementQuantity(item: ItemWarehouse,index:number) {
-  console.log("Before increment - qToPay:", item.qToPay, "value:", item.value);
   this.customerData.items[index].qToPay = (item.qToPay || 0) + 1;
+   // Find the index of the corresponding item in the originalItems list based on its ID
+   const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+
+   // If the original item is found, decrement its quantity
+   if (originalItemIndex !== -1) {
+     this.originalItems[originalItemIndex].quantity -= 1;
+     this.sideCalcService.updateOriginalItems(this.originalItems);
+   }
+   console.log(this.originalItems);
+
   this.calculateTotalValue();
 
-  console.log("After increment - qToPay:", item.qToPay, "totalValue:", this.totalValue);
 }
 
 decrementQuantity(item: ItemWarehouse,index:number) {
-  console.log("Before decrement - qToPay:", item.qToPay, "value:", item.value);
-
   if (item.qToPay > 1) {
     this.customerData.items[index].qToPay =  item.qToPay -= 1;
+      // Find the index of the corresponding item in the originalItems list based on its ID
+   const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+
+   // If the original item is found, decrement its quantity
+   if (originalItemIndex !== -1) {
+     this.originalItems[originalItemIndex].quantity += 1;
+     this.sideCalcService.updateOriginalItems(this.originalItems);
+   }
     this.calculateTotalValue();
 
-    console.log("After decrement - qToPay:", item.qToPay, "totalValue:", this.totalValue);
+    console.log(this.originalItems);
   }
 }
 
 deleteItem(index: number) {
+  // Find the index of the corresponding item in the originalItems list based on its ID
+  const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === this.toPayList[index].id);
+  // If the original item is found, decrement its quantity
+  if (originalItemIndex !== -1) {
+    this.originalItems[originalItemIndex].quantity =  this.originalItems[originalItemIndex].quantity +  this.customerData.items[index].qToPay;
+    this.sideCalcService.updateOriginalItems(this.originalItems);
+
+  }
   this.toPayList.splice(index, 1);
   this.customerData.items[index].qToPay = 1;
   this.customerData.items.splice(index, 1);

@@ -176,8 +176,9 @@ export class WarehouseComponent  implements OnInit {
   }
 
   openYesNoDialog(): void {
-    if(this.selectedItems !== null && this.selectedItems !== undefined && this.selectedItems.size !== 0)
-    this.dialogService.openDialog('Izbriši', 'Sigurno želite izbrisati odabrane proizvode?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
+    if(this.selectedItems !== null && this.selectedItems !== undefined && this.selectedItems.size > 0)
+    {
+      this.dialogService.openDialog('Izbriši proizvod', 'Sigurno želite izbrisati odabrane proizvode?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
       if (result) {
         console.log('User clicked Yes');
         this.deleteSelectedItems();
@@ -187,6 +188,7 @@ export class WarehouseComponent  implements OnInit {
         // Handle No button click
       }
     });
+  }
   }
 
   filterByCategory() {

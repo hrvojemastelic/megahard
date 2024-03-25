@@ -9,6 +9,7 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
 import { SideCalcComponent } from '../side-calc/side-calc.component';
 import { Customer } from '../../models/customer.model';
 import { SideCalcService } from '../../services/side-calc.service';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-main-screen',
@@ -28,10 +29,10 @@ import { SideCalcService } from '../../services/side-calc.service';
 export class MainScreenComponent implements OnInit{
   draggableElements: Customer[] = [];
   openDrawer :boolean = false;
+  selectedItems: Customer[] = [];
 
 
-
-  constructor(private sideCalcService:SideCalcService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService)
+  constructor(private sideCalcService:SideCalcService,private dialogService: DialogService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService)
    {
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.openDrawer = value;
@@ -68,6 +69,39 @@ export class MainScreenComponent implements OnInit{
   }
 
   ngOnDestroy(): void {
+
+  }
+
+    // Function to toggle selection of items
+    toggleSelection(event: any, item: Customer) {
+      if (event.target.checked) {
+        this.selectedItems.push(item);
+      } else {
+        const index = this.selectedItems.indexOf(item);
+        if (index !== -1) {
+          this.selectedItems.splice(index, 1);
+        }
+      }
+    }
+
+      // Function to delete selected items
+  deleteSelectedItems() {
+    this.draggableElements = this.draggableElements.filter(item => !this.selectedItems.includes(item));
+    this.selectedItems = [];
+  }
+
+  openYesNoDialog(): void {
+    if(this.selectedItems !== null && this.selectedItems !== undefined && this.selectedItems.length > 0)
+    {
+  this.dialogService.openDialog('Izbriši objekt', 'Sigurno želite izbrisati odabrane objekte?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
+    if (result) {
+      console.log('User clicked Yes');
+      this.deleteSelectedItems();
+    } else {
+      console.log( result);
+    }
+  });
+}
 
   }
 }

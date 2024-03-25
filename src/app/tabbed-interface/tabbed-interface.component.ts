@@ -13,6 +13,7 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RegisterUserComponent } from '../register-user/register-user.component';
+import { DialogService } from '../../services/dialog.service';
 
 export interface Tab {
   label: string;
@@ -43,7 +44,8 @@ export class TabbedInterfaceComponent  {
     public tabbedInterfaceService: TabbedInterfaceService,
     public injector: Injector,
     private router: Router ,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialogService: DialogService,
   ) {
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.openDrawer = value;
@@ -101,4 +103,19 @@ export class TabbedInterfaceComponent  {
     this.router.navigate(['/register']);
 
   }
+
+  openDeleleteDialog(tab: { label: string; content: Type<any> })
+{
+  this.dialogService.openDialog('Izbriši prostoriju', 'Sigurno želite izbrisati prostoriju?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
+    if (result) {
+      console.log('User clicked Yes');
+      this.removeTab(tab);
+      // Handle Yes button click
+    } else {
+      console.log('User clicked No');
+      // Handle No button click
+    }
+  });
+}
+
 }

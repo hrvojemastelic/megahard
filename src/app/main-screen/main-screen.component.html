@@ -1,18 +1,21 @@
 <mat-toolbar color="primary">
   <span class="spacer"></span>
-  
+
   <button mat-button (click)="savePosition()">Save position</button>
   <button mat-button (click)="addTable()">Table</button>
   <button mat-button (click)="addGuest()">Guest</button>
 
-  <button mat-button>Delete</button>
+  <button mat-button (click)="openYesNoDialog()">Delete</button>
 </mat-toolbar>
 
 <div class="example-boundary">
 
   <div class="example-box" *ngFor="let element of draggableElements" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnd($event, element)">
-    <input [(ngModel)]="element.name" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: 100%;" />
-    <button mat-button (click)="toggleDrawer(element)" style="background-color: green;">Dodaj</button>
+    <input [(ngModel)]="element.name" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: calc(100% - 40px);" />
+    <div class="bottom-row">
+      <button mat-button (click)="toggleDrawer(element)" style="background-color: green;">Dodaj</button>
+      <input type="checkbox" style="width: 30px; height: 30px;" (change)="toggleSelection($event, element)">
+    </div>
   </div>
 </div>
 

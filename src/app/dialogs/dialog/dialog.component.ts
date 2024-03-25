@@ -18,10 +18,13 @@ export class DialogComponent {
   ) { }
 
   onYesClick(): void {
+    console.log('Yes');
+
     this.dialogRef.close(true);
   }
 
   onNoClick(): void {
+    console.log('No');
     this.dialogRef.close(false);
   }
 }

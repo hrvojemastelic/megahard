@@ -5,7 +5,9 @@
     <button mat-button (click)="toggleDrawer()">	<mat-icon>settings_ethernet</mat-icon></button>
     <button mat-button (click)="addNewTab()"> Dodaj prostoriju </button>
     <span class="spacer"></span>
-    <button mat-button (click)="register()">Kreiraj korisnika</button>
+      <h3>{{user.username}}</h3>
+    <span class="spacer"></span>
+    <button *ngIf="user.id === 12" mat-button (click)="register()">Kreiraj korisnika</button>
     <button mat-button (click)="openWarehouse()">Skladište</button>
     <button mat-button (click)="logout()">Odjavi se</button>
   </mat-toolbar>

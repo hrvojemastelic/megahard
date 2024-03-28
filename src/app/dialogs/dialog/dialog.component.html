@@ -1,6 +1,9 @@
-<h1 mat-dialog-title>{{ data.title }}</h1>
+<div class="row" style="background-color: rgb(205, 205, 205); width: 100%;">
+  <h1 mat-dialog-title style="margin-left: 10px; margin-right: 10px;">{{ data.title }}</h1>
+
+</div>
 <div mat-dialog-content>
-  <p>{{ data.message }}</p>
+  <p style="margin-left: 10px; margin-right: 10px; padding-top: 10px;">{{ data.message }}</p>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions custom-actions">
   <button mat-raised-button color="warn" [mat-dialog-close]="false" class="left-button">{{data.buttonOne}}</button>

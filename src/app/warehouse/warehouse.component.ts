@@ -2,26 +2,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ItemWarehouse } from '../../models/item-warehouse.model';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { MatCommonModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
 import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { WarehouseService } from '../../services/warehouse.service';
-import { userInfo } from 'os';
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { MatSelectModule } from '@angular/material/select';
 import {
-  MatDialog,
-  MatDialogRef,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogTitle,
-  MatDialogContent,
+  MatDialog
 } from '@angular/material/dialog';
 import { DialogService } from '../../services/dialog.service';
 import { Category } from '../../models/category.model';
@@ -43,7 +36,8 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
     MatCardModule,
     MatCheckboxModule,
     MatGridListModule,
-    MatSelectModule
+    MatSelectModule,
+    ReactiveFormsModule
   ],
 })
 export class WarehouseComponent  implements OnInit {
@@ -52,11 +46,13 @@ export class WarehouseComponent  implements OnInit {
   items: ItemWarehouse[] = [];
   originalItems: ItemWarehouse[] = [];
   selectedItems: Set<ItemWarehouse> = new Set<ItemWarehouse>();
-  user:User={ id: 0 };
+  user:User={ id: 0, username:'',token:'' };
   addCategoryValue!: Category ;
   searchCategoryValue!: number ;
   searchCategory: Category[] = [{ name:'Topli napitci',id:1},{name:'Bezalkoholna pića',id:2},{name:'Alkoholna pića',id:3},{name:'Miješana alk. pića',id:4},{name:'Pivo',id:5},{name:'Točeno pivo',id:6}];
   closeWarehouseDrawer : boolean=false;
+  newItemForm!: FormGroup; // Declare a form group for your form fields
+
   private originalItemsSubscription: Subscription;
 
 
@@ -66,7 +62,8 @@ export class WarehouseComponent  implements OnInit {
     private dialogService: DialogService,
     private router: Router,
     private sideCalcService: SideCalcService,
-    private tabbedInterfaceService:TabbedInterfaceService) {
+    private tabbedInterfaceService:TabbedInterfaceService,
+    private formBuilder: FormBuilder) {
     // Initialize the originalItems with a copy of the initial items array
     this.originalItemsSubscription = this.sideCalcService.originalItems$.subscribe(items => {
       this.originalItems = items;
@@ -81,12 +78,19 @@ export class WarehouseComponent  implements OnInit {
   ngOnInit(): void {
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
+    this.newItemForm = this.formBuilder.group({
+      name: ['', Validators.required], // Name field is required
+      value: ['', Validators.required], // Value field is required
+      quantity: ['', Validators.required], // Quantity field is required
+      category: ['', Validators.required] // Category field is required
+    });
 
   }
 
 
 
   addItem() {
+    if (this.newItemForm.valid) {
   // Add the new item to the items array list that is showing data from database
   this.items.push({ ...this.newItem });
   //Items that will be save
@@ -95,6 +99,15 @@ export class WarehouseComponent  implements OnInit {
 
   // Clear the inputs
   this.clearInputs();
+  this.insert(false);
+  this.newItemForm.reset();
+
+    }
+    else
+    {
+
+    }
+
   }
 
   searchItems() {
@@ -178,7 +191,7 @@ export class WarehouseComponent  implements OnInit {
   openYesNoDialog(): void {
     if(this.selectedItems !== null && this.selectedItems !== undefined && this.selectedItems.size > 0)
     {
-      this.dialogService.openDialog('Izbriši proizvod', 'Sigurno želite izbrisati odabrane proizvode?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
+      this.dialogService.openDialog('Izbriši proizvod', 'Sigurno želite izbrisati odabrane proizvode?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
       if (result) {
         console.log('User clicked Yes');
         this.deleteSelectedItems();

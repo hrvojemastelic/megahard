@@ -42,7 +42,7 @@ export class SideCalcComponent implements OnInit {
   newItem: ItemWarehouse = { id:0,name: '', value: 0, quantity: 0 ,category:0,qToPay:1};
   totalValue: number = 0;
   totalValueDisplay: string='';
-  user : User={ id: 0 };
+  user : User={ id: 0 ,username:'',token:''};
   private ngUnsubscribe = new Subject<void>();
   customerData!: Customer;
   customerName : string = '';

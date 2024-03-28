@@ -11,31 +11,38 @@
   </div>
 </div>
 
-<div class="input-container">
-  <div class="input-group">
-    <mat-form-field>
-      <input matInput [(ngModel)]="newItem.name" placeholder="Ime" />
-    </mat-form-field>
 
-    <mat-form-field>
-      <input matInput [(ngModel)]="newItem.value" placeholder="Cijena €" />
-    </mat-form-field>
+<form [formGroup]="newItemForm" (ngSubmit)="addItem()">
+  <div class="input-container">
+    <div class="input-group">
+      <mat-form-field>
+        <input matInput formControlName="name" placeholder="Ime"/>
+        <mat-error *ngIf="newItemForm.get('name')!.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input matInput [(ngModel)]="newItem.quantity" placeholder="Stanje" />
-    </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="value" placeholder="Cijena €"/>
+        <mat-error *ngIf="newItemForm.get('value')!.hasError('required')">Value is required</mat-error>
+      </mat-form-field>
 
-    <mat-form-field style="margin-left: 5px;">
-      <mat-label>Kategorija/Vrsta pića</mat-label>
-      <mat-select [(ngModel)]="newItem.category" name="category">
-        @for (category of searchCategory; track category) {
-          <mat-option [value]="category.id">{{category.name}}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="quantity" placeholder="Stanje"/>
+        <mat-error *ngIf="newItemForm.get('quantity')!.hasError('required')">Quantity is required</mat-error>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addItem()">Dodaj</button>
+      <mat-form-field style="margin-left: 5px;">
+        <mat-label>Kategorija/Vrsta pića</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let category of searchCategory" [value]="category.id">{{category.name}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="newItemForm.get('category')!.hasError('required')">Category is required</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Dodaj</button>
+    </div>
   </div>
+</form>
+
 
   <div class="input-group">
     <mat-form-field>
@@ -53,8 +60,6 @@
     <button mat-raised-button color="warn" (click)="resetSearch()">Reset Tražilice</button>
 
   </div>
-
-</div>
 
 <mat-grid-list cols="10" rowHeight="10:10">
   <mat-grid-tile *ngFor="let item of items;let i = index">

@@ -93,7 +93,7 @@ export class MainScreenComponent implements OnInit{
   openYesNoDialog(): void {
     if(this.selectedItems !== null && this.selectedItems !== undefined && this.selectedItems.length > 0)
     {
-  this.dialogService.openDialog('Izbriši objekt', 'Sigurno želite izbrisati odabrane objekte?','Ne','Da','300px', '150px').afterClosed().subscribe((result: any) => {
+  this.dialogService.openDialog('Izbriši objekt', 'Sigurno želite izbrisati odabrane objekte?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
     if (result) {
       console.log('User clicked Yes');
       this.deleteSelectedItems();

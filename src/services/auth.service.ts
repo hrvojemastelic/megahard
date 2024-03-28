@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from './config.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +13,12 @@ import { ConfigService } from './config.service';
 export class AuthService {
   private userKey = 'user';
   private userSubject = new ReplaySubject<any>(1);
+  private token: string | null = null;
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) {
     // Initialize user state on service creation
     this.userSubject.next(this.getUser());
@@ -26,24 +29,35 @@ export class AuthService {
   }
 
   loginUser(username: any, password: any): Observable<any> {
-    const credentials = {
-      username,
-      password
-    };
+        const credentials = {
+            username,
+            password
+        };
 
-    // Adjust the endpoint and request type based on your backend implementation
-    return this.http.post(`${this.backendUrl}/api/login`, credentials).pipe(
-      tap((data: any) => {
-        if (data.success) {
-          // Store user information in localStorage on successful login
-          this.setLocalStorageItem(this.userKey, JSON.stringify(data.user));
-          // Update the user state
-          this.userSubject.next(data.user);
-        }
-      })
-    );
+        return this.http.post(`${this.backendUrl}/api/login`, credentials).pipe(
+            tap((data: any) => {
+                if (data.success) {
+                    this.saveToken(data.token); // Save token to local storage
+                     // Store user information in localStorage on successful login
+                    this.setLocalStorageItem(this.userKey, JSON.stringify(data.user));
+                    // Update the user state
+                    this.userSubject.next(data.user);
+                }
+            })
+        );
+    }
+  saveToken(token: string): void {
+      localStorage.setItem('token', token); // Store token in local storage
   }
-
+ setToken(token: string): void {
+    this.token = token;
+  }
+  getToken(): string | null {
+    return localStorage.getItem('token'); // Retrieve token from local storage
+}
+removeToken(): void {
+  localStorage.removeItem('token'); // Remove token from local storage
+}
   getUser(): any {
     // Retrieve user information from localStorage (if available)
     return this.getLocalStorageItem(this.userKey);
@@ -57,6 +71,8 @@ export class AuthService {
   logout(): void {
     // Remove user information from localStorage (if available) on logout
     this.removeLocalStorageItem(this.userKey);
+    this.removeToken();
+    this.router.navigate(['/login']);
     // Reset the user state
     this.userSubject.next(null);
   }

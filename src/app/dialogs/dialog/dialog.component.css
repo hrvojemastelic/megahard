@@ -1,6 +1,6 @@
 .custom-dialog {
-  width: 50%; /* adjust width as needed */
-  height: 50%; /* adjust height as needed */
+  width: 60%; /* adjust width as needed */
+  height: 60%; /* adjust height as needed */
 }
 .mat-dialog-actions.custom-actions {
   display: flex;
@@ -15,9 +15,11 @@
 
 .mat-dialog-actions.custom-actions .left-button {
   margin-right: 10px; /* Add spacing to the right */
+  margin-left: 10px;
 }
 
 .mat-dialog-actions.custom-actions .right-button {
   margin-left: 10px; /* Add spacing to the left */
+  margin-right: 10px;
 }
 

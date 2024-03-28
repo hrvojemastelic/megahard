@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,8 @@ import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { WarehouseComponent } from './warehouse/warehouse.component';
+import { isPlatformBrowser } from '@angular/common';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -30,14 +32,24 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    // Cancel the event
+    $event.returnValue = false;
+  }
+
   title = 'megahard';
   opened: boolean =false;
   user!: User;
   showWarehouse = false;
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private router: Router,public tabbedInterfaceService: TabbedInterfaceService,private authService: AuthService) {
+  constructor(private router: Router
+    ,public tabbedInterfaceService: TabbedInterfaceService,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private authService: AuthService) {
+
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.opened = value;
 
@@ -48,21 +60,17 @@ export class AppComponent {
 
     });
 
-    this.authService.getUserObservable()
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((user) => {
-      this.user = user;
-
-      if (user) {
-        return true; // User is authenticated, allow access
-      } else {
-        // User is not authenticated, redirect to login page
-        this.router.navigate(['/login']);
-        return false;
-      }
-    });
   }
-
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.authService.setToken(token);
+      } else {
+        this.router.navigate(['/login']);
+      }
+    }
+  }
   logout() {
     // Call the logout service method
     this.authService.logout();

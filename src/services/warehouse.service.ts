@@ -1,14 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ItemWarehouse } from '../models/item-warehouse.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WarehouseService {
-
+  private insertCompleteSubject = new Subject<boolean>();
+  insertComplete$ = this.insertCompleteSubject.asObservable();
 
 constructor(    private http: HttpClient,
   private configService: ConfigService) { }
@@ -34,6 +35,10 @@ constructor(    private http: HttpClient,
     return this.http.post(`${this.backendUrl}/api/warehouse/insert`, credentials);
 
   }
+ emitInsertComplete(insert: boolean) {
+  console.log('Insert complete event emitted:', insert);
 
+    this.insertCompleteSubject.next(insert);
+  }
 
 }

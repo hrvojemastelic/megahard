@@ -1,8 +1,9 @@
+import { SideCalcComponent } from './../side-calc/side-calc.component';
 // warehouse.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ItemWarehouse } from '../../models/item-warehouse.model';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -39,6 +40,7 @@ import { TabbedInterfaceService } from '../../services/tsbs.service';
     MatSelectModule,
     ReactiveFormsModule
   ],
+  providers:[SideCalcComponent]
 })
 export class WarehouseComponent  implements OnInit {
   newItem: ItemWarehouse = {id:0, name: '', value: 0, quantity: 0 ,category:0,qToPay:1};
@@ -52,7 +54,6 @@ export class WarehouseComponent  implements OnInit {
   searchCategory: Category[] = [{ name:'Topli napitci',id:1},{name:'Bezalkoholna pića',id:2},{name:'Alkoholna pića',id:3},{name:'Miješana alk. pića',id:4},{name:'Pivo',id:5},{name:'Točeno pivo',id:6}];
   closeWarehouseDrawer : boolean=false;
   newItemForm!: FormGroup; // Declare a form group for your form fields
-
   private originalItemsSubscription: Subscription;
 
 
@@ -63,7 +64,8 @@ export class WarehouseComponent  implements OnInit {
     private router: Router,
     private sideCalcService: SideCalcService,
     private tabbedInterfaceService:TabbedInterfaceService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private sideCalc:SideCalcComponent) {
     // Initialize the originalItems with a copy of the initial items array
     this.originalItemsSubscription = this.sideCalcService.originalItems$.subscribe(items => {
       this.originalItems = items;
@@ -74,14 +76,15 @@ export class WarehouseComponent  implements OnInit {
       this.closeWarehouseDrawer = value;
 
     });
+
   }
   ngOnInit(): void {
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
     this.newItemForm = this.formBuilder.group({
       name: ['', Validators.required], // Name field is required
-      value: ['', Validators.required], // Value field is required
-      quantity: ['', Validators.required], // Quantity field is required
+      value: ['', [Validators.required, this.decimalValidator()]], // Value field is required
+      quantity:['', [Validators.required, this.numberValidator()]], // Quantity field is required
       category: ['', Validators.required] // Category field is required
     });
 
@@ -92,6 +95,7 @@ export class WarehouseComponent  implements OnInit {
   addItem() {
     if (this.newItemForm.valid) {
   // Add the new item to the items array list that is showing data from database
+  this.newItem = this.newItemForm.value as ItemWarehouse
   this.items.push({ ...this.newItem });
   //Items that will be save
   // Update the originalItems array to reflect the latest state
@@ -163,8 +167,11 @@ export class WarehouseComponent  implements OnInit {
       this.warehouseService.insert(this.items,id)
       .subscribe(
         (response) => {
+          this.warehouseService.emitInsertComplete(true);
           // Handle the response from the backend, if needed
           console.log('Insert successful', response);
+
+
         },
         (error) => {
           // Handle any errors that occurred during the HTTP request
@@ -179,6 +186,8 @@ export class WarehouseComponent  implements OnInit {
         (response) => {
           // Handle the response from the backend, if needed
           console.log('Insert successful', response);
+          this.warehouseService.emitInsertComplete(true);
+
         },
         (error) => {
           // Handle any errors that occurred during the HTTP request
@@ -221,5 +230,35 @@ export class WarehouseComponent  implements OnInit {
   {
       this.closeWarehouseDrawer = false;
       this.tabbedInterfaceService.closeDrawerWarehouse();
+  }
+
+    // Custom validator function for decimal validation
+    decimalValidator() {
+      return (control: FormControl) => {
+        const value = control.value;
+        if (value === null || value === '') {
+          // If the value is empty, validation fails
+          return null;
+        }
+        // Regular expression to match full numbers or decimals with up to two decimal places
+        const decimalRegex = /^\d+(\.\d{1,2})?$/;
+        // Test the value against the regex pattern
+        return decimalRegex.test(value) ? null : { invalidDecimal: true };
+      };
+    }
+
+      // Custom validator function for number validation
+  numberValidator() {
+    return (control: FormControl) => {
+      const value = control.value;
+      if (value === null || value === '') {
+        // If the value is empty, validation fails
+        return { invalidNumber: true };
+      }
+      // Regular expression to match full numbers (no decimal places)
+      const numberRegex = /^[0-9]*$/;
+      // Test the value against the regex pattern
+      return numberRegex.test(value) ? null : { invalidNumber: true };
+    };
   }
 }

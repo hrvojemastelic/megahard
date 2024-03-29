@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { Observable, Subject, map, startWith, takeUntil, timer } from 'rxjs';
@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../../services/config.service';
 import { SideCalcService } from '../../services/side-calc.service';
 import { Customer } from '../../models/customer.model';
+import { WarehouseComponent } from '../warehouse/warehouse.component';
 
 @Component({
   selector: 'app-side-calc',
@@ -83,6 +84,29 @@ export class SideCalcComponent implements OnInit {
       this.calculateTotalValue();
     }
   });
+
+  this.warehouseService.insertComplete$.subscribe(inserted => {
+    console.log('Insert complete event received:', inserted);
+
+    if (inserted) {
+      // Call the getWarehouseList method here
+      this.getWarehouseList();
+      console.log(" iserted");
+
+    }
+    else{
+      console.log("not iserted");
+
+    }
+  });
+  }
+
+  handleEmit(insert:boolean)
+  {
+    console.log(insert);
+
+    this.getWarehouseList();
+
   }
 
   getWarehouseList()

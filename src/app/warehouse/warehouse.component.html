@@ -17,17 +17,19 @@
     <div class="input-group">
       <mat-form-field>
         <input matInput formControlName="name" placeholder="Ime"/>
-        <mat-error *ngIf="newItemForm.get('name')!.hasError('required')">Name is required</mat-error>
+        <mat-error *ngIf="newItemForm.get('name')!.hasError('required')">Ime je obavetno</mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput formControlName="value" placeholder="Cijena €"/>
-        <mat-error *ngIf="newItemForm.get('value')!.hasError('required')">Value is required</mat-error>
+        <mat-error *ngIf="newItemForm.get('value')!.hasError('required')">Vrijednost je obavezna</mat-error>
+        <mat-error *ngIf="newItemForm.get('value')!.hasError('invalidDecimal')">Samo decimalni brojevi sa točkom ili cijeli</mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput formControlName="quantity" placeholder="Stanje"/>
-        <mat-error *ngIf="newItemForm.get('quantity')!.hasError('required')">Quantity is required</mat-error>
+        <mat-error *ngIf="newItemForm.get('quantity')!.hasError('required')">Količina je obavezna</mat-error>
+        <mat-error *ngIf="newItemForm.get('quantity')!.hasError('invalidNumber')">Molim unesite samo cijele brojeve</mat-error>
       </mat-form-field>
 
       <mat-form-field style="margin-left: 5px;">

@@ -33,11 +33,11 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  @HostListener('window:beforeunload', ['$event'])
+ /*@HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     // Cancel the event
     $event.returnValue = false;
-  }
+  }*/
 
   title = 'megahard';
   opened: boolean =false;

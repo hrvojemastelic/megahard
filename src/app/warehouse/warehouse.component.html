@@ -32,7 +32,7 @@
         <mat-error *ngIf="newItemForm.get('quantity')!.hasError('invalidNumber')">Molim unesite samo cijele brojeve</mat-error>
       </mat-form-field>
 
-      <mat-form-field style="margin-left: 5px;">
+      <mat-form-field style="margin-left: 5px; margin-top: 10px;">
         <mat-label>Kategorija/Vrsta pića</mat-label>
         <mat-select formControlName="category">
           <mat-option *ngFor="let category of searchCategory" [value]="category.id">{{category.name}}</mat-option>

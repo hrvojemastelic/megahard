@@ -44,13 +44,13 @@ export class MainScreenComponent implements OnInit{
 
   }
   addTable() {
-    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Table', toPay: 0, quantity: 0, category: 1, items: [], x: 0, y: 0 });
+    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0, category: 1, items: [], x: 0, y: 0 });
     this.completeCustomerList = this.draggableElements;
     console.log(this.completeCustomerList);
   }
 
   addGuest() {
-    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Guest', toPay: 0, quantity: 0, category: 2, items: [], x: 0, y: 0 });
+    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Gost', toPay: 0, quantity: 0, category: 2, items: [], x: 0, y: 0 });
     this.completeCustomerList = this.draggableElements;
     console.log(this.completeCustomerList);
 

@@ -9,7 +9,7 @@
 .example-box {
   position: absolute;
   width: 120px;
-  height: 100px;
+  height: 80px;
   display: flex;
   flex-direction: column;
   border: solid 1px #ccc;

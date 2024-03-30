@@ -2,10 +2,10 @@
   <span class="spacer"></span>
   <button mat-button (click)="downloadListAsTextFile()">Pregled dana</button>
   <button mat-button (click)="savePosition()">Spremi stolove</button>
-  <button mat-button (click)="addTable()">Stol</button>
-  <button mat-button (click)="addGuest()">Gost</button>
+  <button mat-button style="background-color: green;" (click)="addTable()">+ Stol</button>
+  <button mat-button style="background-color: green;" (click)="addGuest()">+ Gost</button>
 
-  <button mat-button (click)="openYesNoDialog()">Izbriši</button>
+  <button mat-button style="background-color: rgb(227, 61, 61);" (click)="openYesNoDialog()">Izbriši</button>
 </mat-toolbar>
 
 <div class="example-boundary">
@@ -13,7 +13,7 @@
   <div class="example-box" *ngFor="let element of draggableElements" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnd($event, element)">
     <input [(ngModel)]="element.name" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: calc(100% - 40px);" />
     <div class="bottom-row">
-      <button mat-button (click)="toggleDrawer(element)" style="background-color: green;">Dodaj</button>
+      <button mat-button (click)="toggleDrawer(element)" [style.backgroundColor]="element.category === 1 ? '#3d96e3' : 'green'">Dodaj</button>
       <input type="checkbox" style="width: 30px; height: 30px;" (change)="toggleSelection($event, element)">
     </div>
   </div>

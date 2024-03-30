@@ -30,7 +30,7 @@ export class MainScreenComponent implements OnInit{
   draggableElements: Customer[] = [];
   openDrawer :boolean = false;
   selectedItems: Customer[] = [];
-
+  completeCustomerList : Customer[] = [];
 
   constructor(private sideCalcService:SideCalcService,private dialogService: DialogService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService)
    {
@@ -45,10 +45,15 @@ export class MainScreenComponent implements OnInit{
   }
   addTable() {
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Table', toPay: 0, quantity: 0, category: 1, items: [], x: 0, y: 0 });
+    this.completeCustomerList = this.draggableElements;
+    console.log(this.completeCustomerList);
   }
 
   addGuest() {
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Guest', toPay: 0, quantity: 0, category: 2, items: [], x: 0, y: 0 });
+    this.completeCustomerList = this.draggableElements;
+    console.log(this.completeCustomerList);
+
   }
   toggleDrawer(customer:any) {
     this.sideCalcService.setCustomerData(customer);
@@ -57,6 +62,8 @@ export class MainScreenComponent implements OnInit{
       this.openDrawer = true;
       this.tabbedInterfaceService.openDrawer();
     }
+    console.log(this.completeCustomerList);
+
   }
    savePosition() {
     this.cdr.detectChanges(); // Trigger change detection to make sure ngModel is updated
@@ -103,5 +110,22 @@ export class MainScreenComponent implements OnInit{
   });
 }
 
+  }
+
+  downloadListAsTextFile() {
+    const listAsString = this.completeCustomerList
+      .map(customer => JSON.stringify(customer))
+      .join('\n\n'); // Add an empty line between each customer
+    const blob = new Blob([listAsString], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'customer_list.txt');
+
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+    link.remove();
   }
 }

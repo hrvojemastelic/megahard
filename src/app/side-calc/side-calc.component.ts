@@ -86,25 +86,15 @@ export class SideCalcComponent implements OnInit {
   });
 
   this.warehouseService.insertComplete$.subscribe(inserted => {
-    console.log('Insert complete event received:', inserted);
-
     if (inserted) {
       // Call the getWarehouseList method here
       this.getWarehouseList();
-      console.log(" iserted");
-
-    }
-    else{
-      console.log("not iserted");
-
     }
   });
   }
 
   handleEmit(insert:boolean)
   {
-    console.log(insert);
-
     this.getWarehouseList();
 
   }

@@ -1,11 +1,11 @@
 <mat-toolbar color="primary">
   <span class="spacer"></span>
+  <button mat-button (click)="downloadListAsTextFile()">Pregled dana</button>
+  <button mat-button (click)="savePosition()">Spremi stolove</button>
+  <button mat-button (click)="addTable()">Stol</button>
+  <button mat-button (click)="addGuest()">Gost</button>
 
-  <button mat-button (click)="savePosition()">Save position</button>
-  <button mat-button (click)="addTable()">Table</button>
-  <button mat-button (click)="addGuest()">Guest</button>
-
-  <button mat-button (click)="openYesNoDialog()">Delete</button>
+  <button mat-button (click)="openYesNoDialog()">Izbriši</button>
 </mat-toolbar>
 
 <div class="example-boundary">

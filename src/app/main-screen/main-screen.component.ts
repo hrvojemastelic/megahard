@@ -10,6 +10,10 @@ import { SideCalcComponent } from '../side-calc/side-calc.component';
 import { Customer } from '../../models/customer.model';
 import { SideCalcService } from '../../services/side-calc.service';
 import { DialogService } from '../../services/dialog.service';
+import { MainScreenService } from '../../services/main-screen.service';
+import { User } from '../../models/user.model';
+import { AuthService } from '../../services/auth.service';
+import { TabbedInterfaceComponent } from '../tabbed-interface/tabbed-interface.component';
 
 @Component({
   selector: 'app-main-screen',
@@ -21,18 +25,28 @@ import { DialogService } from '../../services/dialog.service';
     MatDrawer,
     MatDrawerContainer,
     MatDrawerContent,
-    SideCalcComponent
+    SideCalcComponent,
+    TabbedInterfaceComponent
   ],
   styleUrls: ['./main-screen.component.css']
 })
 
 export class MainScreenComponent implements OnInit{
   draggableElements: Customer[] = [];
+  tables: Customer[] = [];
+  user:User={ id: 0, username:'',token:'' };
+  @Input() tabId: number | null = null;
+
   openDrawer :boolean = false;
   selectedItems: Customer[] = [];
   completeCustomerList : Customer[] = [];
 
-  constructor(private sideCalcService:SideCalcService,private dialogService: DialogService,private cdr: ChangeDetectorRef,public tabbedInterfaceService: TabbedInterfaceService)
+  constructor(private sideCalcService:SideCalcService,
+    private dialogService: DialogService,
+    private cdr: ChangeDetectorRef,
+    public tabbedInterfaceService: TabbedInterfaceService,
+    public mainScreenService:MainScreenService,
+    private authService: AuthService)
    {
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.openDrawer = value;
@@ -41,18 +55,27 @@ export class MainScreenComponent implements OnInit{
     }
 
   ngOnInit(): void {
+    const storedUser = this.authService.getUser();
+    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 
   }
   addTable() {
-    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0, category: 1, items: [], x: 0, y: 0 });
+    const tabId = this.tabbedInterfaceService.getTabId();
+    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
+    category: 1, items: [], x: 0, y: 0,tabId : tabId });
+    this.mainScreenService.tables.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
+    category: 1, items: [], x: 0, y: 0,tabId : tabId });
     this.completeCustomerList = this.draggableElements;
-    console.log(this.completeCustomerList);
+    console.log(this.draggableElements);
+
   }
 
   addGuest() {
-    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Gost', toPay: 0, quantity: 0, category: 2, items: [], x: 0, y: 0 });
+    const tabId = this.tabbedInterfaceService.getTabId();
+
+    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Gost', toPay: 0, quantity: 0, category: 2,
+    items: [], x: 0, y: 0, tabId: tabId});
     this.completeCustomerList = this.draggableElements;
-    console.log(this.completeCustomerList);
 
   }
   toggleDrawer(customer:any) {
@@ -67,7 +90,16 @@ export class MainScreenComponent implements OnInit{
   }
    savePosition() {
     this.cdr.detectChanges(); // Trigger change detection to make sure ngModel is updated
-    console.log(this.draggableElements);
+    this.tables = this.mainScreenService.tables;
+    const numberOfTabs = this.tabbedInterfaceService.tabs;
+    this.mainScreenService.saveTablePositions(this.tables, this.user.id,numberOfTabs.length).subscribe(
+      () => {
+        console.log('Table positions saved successfully');
+      },
+      (error) => {
+        console.error('Error saving table positions:', error);
+      }
+    );    console.log(this.draggableElements);
   }
 
   onDragEnd(event: any, element: Customer) {
@@ -127,5 +159,12 @@ export class MainScreenComponent implements OnInit{
 
     window.URL.revokeObjectURL(url);
     link.remove();
+  }
+
+
+  // Method to set tab ID
+  setTabId(id: number) {
+    this.tabId = id;
+    console.log('Tab ID:', this.tabId);
   }
 }

@@ -9,4 +9,5 @@ export interface Customer {
     items:ItemWarehouse[];
     x:number;
     y:number;
+    tabId:number | null;
   }

@@ -15,11 +15,9 @@ import { AuthService } from '../../services/auth.service';
 import { RegisterUserComponent } from '../register-user/register-user.component';
 import { DialogService } from '../../services/dialog.service';
 import { User } from '../../models/user.model';
+import { Customer } from '../../models/customer.model';
 
-export interface Tab {
-  label: string;
-  content: Type<any>; // Ensure that 'content' is of type 'Type<any>'
-}
+
 
 @Component({
   selector: 'app-tabbed-interface',
@@ -31,8 +29,8 @@ export interface Tab {
     MatDrawer,
     MatDrawerContainer,
     MatDrawerContent,
-    RegisterUserComponent
-
+    RegisterUserComponent,
+    MainScreenComponent
   ],
   templateUrl: './tabbed-interface.component.html',
   styleUrl: './tabbed-interface.component.css'
@@ -42,7 +40,10 @@ export class TabbedInterfaceComponent  implements OnInit {
   openDrawer :boolean = false;
   openDrawerWarehouse :boolean = false;
   user!:User ;
-  title : string = 'WhiteLion';
+  title : string = '';
+  activeTabId: number | null = null;
+  tables : Customer[] = [];
+
   constructor(
     public tabbedInterfaceService: TabbedInterfaceService,
     public injector: Injector,
@@ -64,16 +65,19 @@ export class TabbedInterfaceComponent  implements OnInit {
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 }
   addNewTab() {
+    const id = this.tabbedInterfaceService.tabs.length; // Or whatever logic you want to use for generating IDs
     const label = 'Prostorija ' + this.tabbedInterfaceService.tabs.length;
     const mainScreenInstance = this.tabbedInterfaceService.createComponentInstance(MainScreenComponent);
+    console.log(id);
+
 
     // You can pass inputs to your component if needed
     // mainScreenInstance.instance.someInput = someValue;
 
-    this.tabbedInterfaceService.addTab(label, mainScreenInstance.componentType);
+    this.tabbedInterfaceService.addTab(id,label, mainScreenInstance.componentType);
   }
 
-  removeTab(tab: { label: string; content: Type<any> }) {
+  removeTab(tab: {id:number, label: string; content: Type<any> }) {
     const index = this.tabbedInterfaceService.tabs.indexOf(tab);
     if (index !== -1) {
       this.tabbedInterfaceService.tabs.splice(index, 1);
@@ -120,7 +124,7 @@ export class TabbedInterfaceComponent  implements OnInit {
 
   }
 
-  openDeleleteDialog(tab: { label: string; content: Type<any> })
+  openDeleleteDialog(tab: {id:number, label: string; content: Type<any> })
 {
   this.dialogService.openDialog('Izbriši prostoriju', 'Sigurno želite izbrisati prostoriju?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
     if (result) {
@@ -132,6 +136,53 @@ export class TabbedInterfaceComponent  implements OnInit {
       // Handle No button click
     }
   });
+}
+
+onTabChange(index: number) {
+  // Ensure index is within bounds of tabs array
+  if (index >= 0 && index < this.tabbedInterfaceService.tabs.length) {
+    this.activeTabId = this.tabbedInterfaceService.tabs[index].id;
+
+      this.tabbedInterfaceService.setTabId(this.activeTabId);
+
+  } else {
+
+    this.activeTabId = null; // Reset activeTabId if index is out of bounds
+  }
+}
+
+
+getTablesList()
+{
+
+  this.tabbedInterfaceService.getTablesList(this.user.id)
+  .subscribe(
+    (response) => {
+      // Handle the response from the backend, if needed
+      console.log('Insert successful', response['data'].tabs);
+
+      if(response['data'])
+      {
+
+        const numberOfTabs :number = response['data'].tabs;
+        console.log(numberOfTabs);
+        for(let i = 0; i < numberOfTabs; i ++)
+        {
+          this.addNewTab()
+        }
+
+        if(response['data'].tables)
+        {
+        }
+      }
+
+      // Clear the newAddedItems array after successful insert
+    },
+    (error) => {
+      // Handle any errors that occurred during the HTTP request
+      console.error('Error inserting data', error);
+    }
+  );
 }
 
 }

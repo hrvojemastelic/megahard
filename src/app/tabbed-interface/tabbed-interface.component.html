@@ -4,6 +4,8 @@
 
     <button mat-button style="background-color: #3d96e3; margin-right: 10px;" (click)="toggleDrawer()">	<mat-icon>settings_ethernet</mat-icon> Kalkulator</button>
     <button mat-button style="background-color: green" (click)="addNewTab()">+ Dodaj prostoriju </button>
+    <button mat-button style="background-color: green; margin-left: 10px;" (click)="getTablesList()">Učitaj prostorije </button>
+
     <span class="spacer"></span>
       <h3>{{user.username}}</h3>
     <span class="spacer"></span>
@@ -14,7 +16,7 @@
 
   <!-- Container div for the mat-tab-group -->
   <div class="tab-container">
-    <mat-tab-group>
+    <mat-tab-group  [selectedIndex]="activeTabId" (selectedIndexChange)="onTabChange($event)">
       <mat-tab *ngFor="let tab of tabbedInterfaceService.tabs" [label]="tab.label">
         <!-- Content of the tab -->
            <!-- "x" button to remove the tab -->

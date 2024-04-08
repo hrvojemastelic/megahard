@@ -69,7 +69,7 @@
       <mat-checkbox (change)="toggleItemSelection(item)" [checked]="selectedItems.has(item)"></mat-checkbox>
       <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: flex-start;">
         <span style="margin-left: 4px; font-size: small;"><b>{{ item.name }}</b></span>
-        <span style="margin-left: 4px; font-size: small;">Komada: {{ item.quantity }}</span>
+        <span style="margin-left: 4px; font-size: small;">Stanje: {{ item.quantity }}</span>
         <span style="margin-left: 4px; font-size: small;">Cijena: {{ item.value }}€</span>
       </div>
     </div>

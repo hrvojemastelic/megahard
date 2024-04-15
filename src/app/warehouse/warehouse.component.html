@@ -6,7 +6,7 @@
   <div class="delete-button-container">
 
 
-    <button mat-raised-button color="primary" (click)="insert(false)" >Spremi</button>
+    <button mat-raised-button color="primary" (click)="openSaveDialog()" >Spremi</button>
     <button mat-raised-button color="warn" (click)="openYesNoDialog()" >Obriši</button>
   </div>
 </div>
@@ -32,7 +32,7 @@
         <mat-error *ngIf="newItemForm.get('quantity')!.hasError('invalidNumber')">Molim unesite samo cijele brojeve</mat-error>
       </mat-form-field>
 
-      <mat-form-field style="margin-left: 5px; margin-top: 10px;">
+      <mat-form-field style="margin-left: 5px; margin-top: 10px; margin-right: 10px;">
         <mat-label>Kategorija/Vrsta pića</mat-label>
         <mat-select formControlName="category">
           <mat-option *ngFor="let category of searchCategory" [value]="category.id">{{category.name}}</mat-option>
@@ -50,7 +50,7 @@
     <mat-form-field>
       <input matInput [(ngModel)]="searchTerm" placeholder="Search by Name" (input)="searchItems()" />
     </mat-form-field>
-    <mat-form-field style="margin-left: 5px;">
+    <mat-form-field style="margin-left: 5px; margin-right: 10px;">
       <mat-label>Kategorija/Vrsta pića</mat-label>
       <mat-select [(ngModel)]="searchCategoryValue" (selectionChange)="onCategoryChange()" name="category">
         @for (category of searchCategory; track category) {
@@ -61,16 +61,27 @@
     <button mat-raised-button color="primary" (click)="searchItems()">Traži</button>
     <button mat-raised-button color="warn" (click)="resetSearch()">Reset Tražilice</button>
 
+    <label for="brojStupaca" style="margin-left: 40px; margin-right: 10px;">Broj stupaca</label>
+    <mat-form-field style="width: 100px;">
+      <input matInput id="brojStupaca" [(ngModel)]="numberOfCols" placeholder="Broj stupaca"  type="number" style="width: 60px; font-size: 16px; " />
+    </mat-form-field>
+
   </div>
 
-<mat-grid-list cols="10" rowHeight="10:10">
+<mat-grid-list cols="{{numberOfCols}}" rowHeight="10:10">
   <mat-grid-tile *ngFor="let item of items;let i = index">
     <div style="display: flex; flex-direction: column; height: 100%;">
       <mat-checkbox (change)="toggleItemSelection(item)" [checked]="selectedItems.has(item)"></mat-checkbox>
       <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: flex-start;">
-        <span style="margin-left: 4px; font-size: small;"><b>{{ item.name }}</b></span>
-        <span style="margin-left: 4px; font-size: small;">Stanje: {{ item.quantity }}</span>
-        <span style="margin-left: 4px; font-size: small;">Cijena: {{ item.value }}€</span>
+        <input matInput [(ngModel)]="item.name" placeholder="Name" style="width: 50%; font-size: 12px; font-weight:bold ; background-color: lightblue; border-style: none;" />
+        <div style="display: flex; align-items: center;">
+          <label for="stanje" style="margin-right: 5px;">Stanje:</label>
+          <input matInput id="stanje" [(ngModel)]="item.quantity" placeholder="Qty" type="number" style="width: 50%; font-size: 12px;background-color: lightblue; border-style: none;" />
+        </div>
+        <div style="display: flex; align-items: center;">
+          <label for="cijena" style="margin-right: 5px;">Cijena:</label>
+          <input matInput id="cijena" [(ngModel)]="item.value" placeholder="Val" type="number" style="width: 50%; font-size: 12px;background-color: lightblue; border-style: none;" />
+        </div>
       </div>
     </div>
   </mat-grid-tile>

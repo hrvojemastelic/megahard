@@ -48,33 +48,41 @@ export class MainScreenComponent implements OnInit{
     public mainScreenService:MainScreenService,
     private authService: AuthService)
    {
+
+    this.draggableElements = this.mainScreenService.tables;
+
+
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.openDrawer = value;
-
     });
     }
 
   ngOnInit(): void {
-    const storedUser = this.authService.getUser();
+  const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 
   }
   addTable() {
-    const tabId = this.tabbedInterfaceService.getTabId();
+    const tabId = this.tabbedInterfaceService.getActiveTabId();
+    console.log(tabId);
+    // CURRENTLY DISPLAYED TABLES
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
+    //FOR SAVING EVERY TABLE IN EVERY TAB
     this.mainScreenService.tables.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
+    // FOR LOGGING WHOLE DAY TRAFIC
     this.completeCustomerList = this.draggableElements;
     console.log(this.draggableElements);
 
   }
 
   addGuest() {
-    const tabId = this.tabbedInterfaceService.getTabId();
+    const tabId = this.tabbedInterfaceService.getActiveTabId();
 
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Gost', toPay: 0, quantity: 0, category: 2,
     items: [], x: 0, y: 0, tabId: tabId});
+        // FOR LOGGING WHOLE DAY TRAFIC
     this.completeCustomerList = this.draggableElements;
 
   }
@@ -105,10 +113,6 @@ export class MainScreenComponent implements OnInit{
   onDragEnd(event: any, element: Customer) {
     element.x = event.source.getFreeDragPosition().x;
     element.y = event.source.getFreeDragPosition().y;
-  }
-
-  ngOnDestroy(): void {
-
   }
 
     // Function to toggle selection of items
@@ -161,10 +165,7 @@ export class MainScreenComponent implements OnInit{
     link.remove();
   }
 
+  ngOnDestroy(): void {
 
-  // Method to set tab ID
-  setTabId(id: number) {
-    this.tabId = id;
-    console.log('Tab ID:', this.tabId);
   }
 }

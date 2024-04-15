@@ -4,7 +4,7 @@
 
     <button mat-button style="background-color: #3d96e3; margin-right: 10px;" (click)="toggleDrawer()">	<mat-icon>settings_ethernet</mat-icon> Kalkulator</button>
     <button mat-button style="background-color: green" (click)="addNewTab()">+ Dodaj prostoriju </button>
-    <button mat-button style="background-color: green; margin-left: 10px;" (click)="getTablesList()">Učitaj prostorije </button>
+    <button mat-button style=" margin-left: 10px;" (click)="getTablesList()">Učitaj prostorije </button>
 
     <span class="spacer"></span>
       <h3>{{user.username}}</h3>
@@ -22,7 +22,7 @@
            <!-- "x" button to remove the tab -->
           <!-- "x" button to remove the tab -->
 
-        <ng-container *ngComponentOutlet="tab.content"></ng-container>
+  <ng-container *ngComponentOutlet="tab.content"></ng-container>
         <button mat-button style="background-color: rgb(227, 61, 61); " class="close-button" (click)="openDeleleteDialog(tab)">
             <span style="color: white; ">Izbriši prostoriju</span>
         </button>

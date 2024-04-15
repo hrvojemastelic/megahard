@@ -55,6 +55,7 @@ export class WarehouseComponent  implements OnInit {
   closeWarehouseDrawer : boolean=false;
   newItemForm!: FormGroup; // Declare a form group for your form fields
   private originalItemsSubscription: Subscription;
+  numberOfCols:number= 10;
 
 
   constructor(private warehouseService:WarehouseService,
@@ -260,5 +261,19 @@ export class WarehouseComponent  implements OnInit {
       // Test the value against the regex pattern
       return numberRegex.test(value) ? null : { invalidNumber: true };
     };
+  }
+
+  openSaveDialog(): void {
+
+      this.dialogService.openDialog('Spremi proizvode', 'Sigurno želite spremiti promjene na proizvodima?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
+      if (result) {
+        console.log('User clicked Yes');
+        this.insert(false);
+        // Handle Yes button click
+      } else {
+        console.log('User clicked No');
+        // Handle No button click
+      }
+    });
   }
 }

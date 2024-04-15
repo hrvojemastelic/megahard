@@ -1,6 +1,6 @@
 // tabbed-interface.service.ts
 
-import { Injectable, ComponentFactoryResolver, Injector, Type, EventEmitter } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, Injector, Type, EventEmitter, ComponentRef } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { TabbedInterfaceComponent } from '../app/tabbed-interface/tabbed-interface.component';
 import { HttpClient } from '@angular/common/http';
@@ -16,18 +16,19 @@ export class TabbedInterfaceService {
   drawerState : boolean = false;
   drawerOpenWarehouse$ = new EventEmitter<boolean>();
   drawerStateWarehouse : boolean = false;
-  tabId: number | null = null;
+  activeTabId: number | null = null;
 
   constructor(private configService: ConfigService,private http: HttpClient,private componentFactoryResolver: ComponentFactoryResolver, private injector: Injector) {}
   private get backendUrl(): string {
     return this.configService.getBackendUrl();
   }
 
+
   addTab(id: number,label: string, component: Type<any>) {
     this.tabs.push({id, label, content: component });
   }
 
-  createComponentInstance(component: Type<any>) {
+ createComponentInstance(component: Type<any>) {
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
 
     // Provide an Injector instance when creating the component
@@ -73,14 +74,14 @@ export class TabbedInterfaceService {
     return this.drawerStateWarehouse;
   }
 
-  setTabId(activeTabId: number) {
+  setActiveTabId(activeTabId: number) {
 
-    this.tabId = activeTabId;
+    this.activeTabId = activeTabId;
   }
 
-  getTabId()
+  getActiveTabId()
   {
-    return this.tabId;
+    return this.activeTabId;
   }
 
   getTablesList(userId: number): Observable<any> {
@@ -90,5 +91,6 @@ export class TabbedInterfaceService {
     // Adjust the endpoint and request type based on your backend implementation
     return this.http.post(`${this.backendUrl}/api/tables/getList`, credentials);
   }
+
 
 }

@@ -24,5 +24,9 @@ export class MainScreenService {
     return this.http.post(`${this.backendUrl}/api/tables/insert`, credentials);
   }
 
+  setTables(tables : Customer[] )
+  {
+    this.tables = tables;
+  }
 
 }

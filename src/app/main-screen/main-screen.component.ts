@@ -49,9 +49,6 @@ export class MainScreenComponent implements OnInit{
     private authService: AuthService)
    {
 
-    this.draggableElements = this.mainScreenService.tables;
-
-
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.openDrawer = value;
     });

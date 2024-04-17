@@ -63,7 +63,7 @@ export class MainScreenComponent implements OnInit{
   }
   addTable() {
     const tabId = this.tabbedInterfaceService.getActiveTabId();
-    console.log(tabId);
+    console.log(this.tabId);
     // CURRENTLY DISPLAYED TABLES
     this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });

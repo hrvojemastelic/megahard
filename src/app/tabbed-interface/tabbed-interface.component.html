@@ -22,7 +22,7 @@
            <!-- "x" button to remove the tab -->
           <!-- "x" button to remove the tab -->
 
-  <ng-container *ngComponentOutlet="tab.content"></ng-container>
+  <ng-container *ngComponentOutlet="tab.content; inputs: { tabId } "></ng-container>
         <button mat-button style="background-color: rgb(227, 61, 61); " class="close-button" (click)="openDeleleteDialog(tab)">
             <span style="color: white; ">Izbriši prostoriju</span>
         </button>

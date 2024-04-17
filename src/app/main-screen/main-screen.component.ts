@@ -55,6 +55,8 @@ export class MainScreenComponent implements OnInit{
     }
 
   ngOnInit(): void {
+    console.log(this.tabId);
+
   const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 

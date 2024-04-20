@@ -40,6 +40,9 @@ export class MainScreenComponent implements OnInit{
   openDrawer :boolean = false;
   selectedItems: Customer[] = [];
   completeCustomerList : Customer[] = [];
+  multiPayTotal: any;
+  totalValue: number = 0;
+  totalValueDisplay!: string;
 
   constructor(private sideCalcService:SideCalcService,
     private dialogService: DialogService,
@@ -55,25 +58,28 @@ export class MainScreenComponent implements OnInit{
     }
 
   ngOnInit(): void {
-    console.log(this.tabId);
+    if(this.mainScreenService.tables.length > 0 )
+    {
+      this.draggableElements = this.mainScreenService.tables.filter((item) => item.tabId === this.tabId);
 
-  const storedUser = this.authService.getUser();
+      this.cdr.detectChanges();
+      console.log(this.draggableElements);
+    }
+    const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 
   }
   addTable() {
     const tabId = this.tabbedInterfaceService.getActiveTabId();
-    console.log(this.tabId);
     // CURRENTLY DISPLAYED TABLES
-    this.draggableElements.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
+    const id  = this.draggableElements.length + 1;
+    this.draggableElements.push({ id: id, name: 'Stol', toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
     //FOR SAVING EVERY TABLE IN EVERY TAB
-    this.mainScreenService.tables.push({ id: this.draggableElements.length + 1, name: 'Stol', toPay: 0, quantity: 0,
+    this.mainScreenService.tables.push({ id: id, name: 'Stol', toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
     // FOR LOGGING WHOLE DAY TRAFIC
     this.completeCustomerList = this.draggableElements;
-    console.log(this.draggableElements);
-
   }
 
   addGuest() {
@@ -112,12 +118,21 @@ export class MainScreenComponent implements OnInit{
   onDragEnd(event: any, element: Customer) {
     element.x = event.source.getFreeDragPosition().x;
     element.y = event.source.getFreeDragPosition().y;
+    this.mainScreenService.tables.find((item) => item.id === element.id)?.x === element.x;
+    this.mainScreenService.tables.find((item) => item.id === element.id )?.y === element.y;
+    console.log(this.mainScreenService.tables);
+
+
+
   }
 
     // Function to toggle selection of items
     toggleSelection(event: any, item: Customer) {
       if (event.target.checked) {
+        console.log(item);
         this.selectedItems.push(item);
+        console.log(this.selectedItems);
+
       } else {
         const index = this.selectedItems.indexOf(item);
         if (index !== -1) {
@@ -163,6 +178,55 @@ export class MainScreenComponent implements OnInit{
     window.URL.revokeObjectURL(url);
     link.remove();
   }
+
+  multiPay()
+  {
+    if(this.selectedItems.length > 0 )
+    {
+
+      this.calculateTotalValue();
+    }
+  }
+
+
+  calculateTotalValue() {
+    console.log(this.selectedItems);
+    this.multiPayTotal = 0;
+    this.selectedItems.forEach(element => {
+      try {
+        console.log(element);
+        let totalValue = 0;
+        totalValue = element.items.reduce((total, item) => {
+          const quantity = item.qToPay || 1;
+          return total + parseFloat(item.value.toString()) * quantity;
+        }, 0);
+
+        if (typeof totalValue === 'number' && !isNaN(totalValue)) {
+          element.toPay = totalValue;
+          this.multiPayTotal += totalValue;
+          this.multiPayTotal = parseFloat(this.multiPayTotal.toFixed(2));
+
+        } else {
+          console.error("Error: totalValue is not a valid number after reduce:", totalValue);
+          element.toPay = 0;
+        }
+      } catch (error) {
+        console.error("Error in calculateTotalValue:", error);
+      }
+    });
+
+    // Log total value and open dialog
+    console.log("MultiPayTotal:", this.multiPayTotal);
+    this.dialogService.openDialog('Ukupno za platiti', 'Ukupni iznos za platiti iznosi : '  + this.multiPayTotal, null, 'Ok', '400px', '175px').afterClosed().subscribe((result: any) => {
+      if (result) {
+        // Handle dialog result if needed
+      } else {
+        // Handle dialog closure if needed
+      }
+    });
+  }
+
+
 
   ngOnDestroy(): void {
 

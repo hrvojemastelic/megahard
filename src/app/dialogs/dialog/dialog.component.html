@@ -6,7 +6,7 @@
   <p style="margin-left: 10px; margin-right: 10px; padding-top: 10px;">{{ data.message }}</p>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions custom-actions">
-  <button mat-raised-button color="warn" [mat-dialog-close]="false" class="left-button">{{data.buttonOne}}</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="false" class="left-button" *ngIf="data.buttonOne !== null">{{data.buttonOne}}</button>
   <span class="spacer"></span>
   <button mat-raised-button color="primary" [mat-dialog-close]="true" class="right-button">{{data.buttonTwo}}</button>
 </div>

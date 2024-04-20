@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogClose, MatDialogRef } from '@angular/material/dialog';
@@ -7,7 +8,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogClose, MatDialogRef } from '@angul
   templateUrl: './dialog.component.html',
   styleUrls: ['./dialog.component.css'],
   standalone: true,
-  imports: [MatDialogClose,MatButton]
+  imports: [MatDialogClose,MatButton,CommonModule]
 
 })
 export class DialogComponent {

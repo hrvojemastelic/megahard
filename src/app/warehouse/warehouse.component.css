@@ -4,29 +4,29 @@
     display: flex;
     flex-wrap: wrap;
   }
-  
+
   .item {
     width: 20%; /* Set the width to 20% for smaller items and multiple columns */
     box-sizing: border-box;
     padding: 10px;
   }
-  
+
   .row {
     width: 100%;
     display: flex;
     justify-content: space-between;
   }
-  
+
   .mat-card {
     width: 100%; /* Ensure the card takes the full width of its container */
   }
-  
+
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .delete-button-container {
     margin-right: 20px; /* Adjust the margin as needed */
   }
@@ -41,3 +41,7 @@
     justify-content: flex-start; /* Align content to the start of each tile */
     height: 100%; /* Ensure tiles take 100% height of the grid list */
   }
+
+  ::ng-deep .mat-grid-tile.low-quantity .mat-grid-tile-content {
+    background: red; /* Change background to red for low quantity */
+}

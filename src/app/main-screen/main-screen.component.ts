@@ -118,9 +118,22 @@ export class MainScreenComponent implements OnInit{
   onDragEnd(event: any, element: Customer) {
     element.x = event.source.getFreeDragPosition().x;
     element.y = event.source.getFreeDragPosition().y;
-    this.mainScreenService.tables.find((item) => item.id === element.id)?.x === element.x;
-    this.mainScreenService.tables.find((item) => item.id === element.id )?.y === element.y;
+    console.log(element.x);
+    console.log(element.y);
+
+    const tableX = this.mainScreenService.tables.find((item) => item.id === element.id && item.tabId === element.tabId);
+    if(tableX)
+    {
+      tableX.x = element.x;
+    }
+    const tableY =  this.mainScreenService.tables.find((item) => item.id === element.id && item.tabId === element.tabId );
+    if(tableY)
+    {
+      tableY.y = element.y;
+    }
+
     console.log(this.mainScreenService.tables);
+    this.cdr.detectChanges();
 
 
 

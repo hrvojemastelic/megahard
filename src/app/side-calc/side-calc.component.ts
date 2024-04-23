@@ -20,6 +20,7 @@ import { ConfigService } from '../../services/config.service';
 import { SideCalcService } from '../../services/side-calc.service';
 import { Customer } from '../../models/customer.model';
 import { WarehouseComponent } from '../warehouse/warehouse.component';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-side-calc',
@@ -50,7 +51,8 @@ export class SideCalcComponent implements OnInit {
 
 
 
-  constructor(private sideCalcService:SideCalcService,private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
+  constructor(    private dialogService: DialogService,
+    private sideCalcService:SideCalcService,private configService: ConfigService, private http: HttpClient,private warehouseService: WarehouseService,private authService:AuthService)
   {
 
 
@@ -215,18 +217,31 @@ calculateTotalValue() {
 }
 
 incrementQuantity(item: ItemWarehouse,index:number) {
-  this.customerData.items[index].qToPay = (item.qToPay || 0) + 1;
-   // Find the index of the corresponding item in the originalItems list based on its ID
-   const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+  if(item.quantity > 0)
+  {
+    this.customerData.items[index].qToPay = (item.qToPay || 0) + 1;
+    // Find the index of the corresponding item in the originalItems list based on its ID
+    const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
 
-   // If the original item is found, decrement its quantity
-   if (originalItemIndex !== -1) {
-     this.originalItems[originalItemIndex].quantity -= 1;
-     this.sideCalcService.updateOriginalItems(this.originalItems);
-   }
-   console.log(this.originalItems);
+    // If the original item is found, decrement its quantity
+    if (originalItemIndex !== -1) {
+      this.originalItems[originalItemIndex].quantity -= 1;
+      this.sideCalcService.updateOriginalItems(this.originalItems);
+    }
+    console.log(this.originalItems);
 
-  this.calculateTotalValue();
+   this.calculateTotalValue();
+  }
+  else{
+    this.dialogService.openDialog('Skladište', 'Stanje na skladištu nije dovoljno.',null,'Ok','400px', '175px').afterClosed().subscribe((result: any) => {
+      if (result) {
+        // Handle Yes button click
+      } else {
+        // Handle No button click
+      }
+    });
+  }
+
 
 }
 
@@ -248,7 +263,11 @@ decrementQuantity(item: ItemWarehouse,index:number) {
 }
 
 deleteItem(index: number) {
-  // Find the index of the corresponding item in the originalItems list based on its ID
+
+  this.dialogService.openDialog('Kalkulator', 'Sigurno želite izbrisati proizvod ?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
+    if (result) {
+      // Handle Yes button click
+       // Find the index of the corresponding item in the originalItems list based on its ID
   const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === this.toPayList[index].id);
   // If the original item is found, decrement its quantity
   if (originalItemIndex !== -1) {
@@ -260,6 +279,11 @@ deleteItem(index: number) {
   this.customerData.items[index].qToPay = 1;
   this.customerData.items.splice(index, 1);
   this.calculateTotalValue(); // Recalculate total value after the change
+    } else {
+      // Handle No button click
+    }
+  });
+
 }
 ngOnDestroy(): void {
   this.ngUnsubscribe.next();

@@ -60,10 +60,8 @@ export class MainScreenComponent implements OnInit{
   ngOnInit(): void {
     if(this.mainScreenService.tables.length > 0 )
     {
-      this.draggableElements = this.mainScreenService.tables.filter((item) => item.tabId === this.tabId);
-
+      this.draggableElements = this.mainScreenService.tables.filter(item => item.tabId === this.tabId).map(item => ({...item}));
       this.cdr.detectChanges();
-      console.log(this.draggableElements);
     }
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
@@ -73,10 +71,10 @@ export class MainScreenComponent implements OnInit{
     const tabId = this.tabbedInterfaceService.getActiveTabId();
     // CURRENTLY DISPLAYED TABLES
     const id  = this.draggableElements.length + 1;
-    this.draggableElements.push({ id: id, name: 'Stol', toPay: 0, quantity: 0,
+    this.draggableElements.push({ id: id, name: 'Stol ' + id, toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
     //FOR SAVING EVERY TABLE IN EVERY TAB
-    this.mainScreenService.tables.push({ id: id, name: 'Stol', toPay: 0, quantity: 0,
+    this.mainScreenService.tables.push({ id: id, name: 'Stol ' + id, toPay: 0, quantity: 0,
     category: 1, items: [], x: 0, y: 0,tabId : tabId });
     // FOR LOGGING WHOLE DAY TRAFIC
     this.completeCustomerList = this.draggableElements;
@@ -116,24 +114,20 @@ export class MainScreenComponent implements OnInit{
   }
 
   onDragEnd(event: any, element: Customer) {
-    element.x = event.source.getFreeDragPosition().x;
-    element.y = event.source.getFreeDragPosition().y;
-    console.log(element.x);
-    console.log(element.y);
 
+    console.log(event);
+
+    const distance = event.distance;
     const tableX = this.mainScreenService.tables.find((item) => item.id === element.id && item.tabId === element.tabId);
     if(tableX)
     {
-      tableX.x = element.x;
-    }
-    const tableY =  this.mainScreenService.tables.find((item) => item.id === element.id && item.tabId === element.tabId );
-    if(tableY)
-    {
-      tableY.y = element.y;
-    }
+      tableX.name = element.name;
+      tableX.x = distance.x;
+      tableX.y = distance.y;
 
+    }
     console.log(this.mainScreenService.tables);
-    this.cdr.detectChanges();
+    console.log(this.draggableElements);
 
 
 

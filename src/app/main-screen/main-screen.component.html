@@ -12,7 +12,7 @@
 <div class="example-boundary">
 
   <div class="example-box" *ngFor="let element of draggableElements" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnd($event, element)"
-  >
+  [ngStyle]="{'left.px': element.x, 'top.px': element.y}">
     <input [(ngModel)]="element.name" placeholder="Enter name" class="element-input" style="max-width: 100%; max-height: calc(100% - 40px);" />
     <div class="bottom-row">
       <button mat-button (click)="toggleDrawer(element)" [style.backgroundColor]="element.category === 1 ? '#3d96e3' : 'green'">Dodaj</button>

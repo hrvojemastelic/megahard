@@ -31,7 +31,7 @@ import { TabbedInterfaceComponent } from '../tabbed-interface/tabbed-interface.c
   styleUrls: ['./main-screen.component.css']
 })
 
-export class MainScreenComponent implements OnInit{
+export class MainScreenComponent implements OnInit ,AfterViewInit{
   draggableElements: Customer[] = [];
   tables: Customer[] = [];
   user:User={ id: 0, username:'',token:'' };
@@ -56,13 +56,16 @@ export class MainScreenComponent implements OnInit{
       this.openDrawer = value;
     });
     }
+  ngAfterViewInit(): void {
+    if(this.mainScreenService.tables.length > 0 )
+      {
+        this.draggableElements = this.mainScreenService.tables.filter(item => item.tabId === this.tabId).map(item => ({...item}));
+        this.cdr.detectChanges();
+      }
+    }
 
   ngOnInit(): void {
-    if(this.mainScreenService.tables.length > 0 )
-    {
-      this.draggableElements = this.mainScreenService.tables.filter(item => item.tabId === this.tabId).map(item => ({...item}));
-      this.cdr.detectChanges();
-    }
+
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 
@@ -100,10 +103,9 @@ export class MainScreenComponent implements OnInit{
 
   }
    savePosition() {
-    this.cdr.detectChanges(); // Trigger change detection to make sure ngModel is updated
-    this.tables = this.mainScreenService.tables;
+
     const numberOfTabs = this.tabbedInterfaceService.tabs;
-    this.mainScreenService.saveTablePositions(this.tables, this.user.id,numberOfTabs.length).subscribe(
+    this.mainScreenService.saveTablePositions(this.mainScreenService.tables, this.user.id,numberOfTabs.length).subscribe(
       () => {
         console.log('Table positions saved successfully');
       },
@@ -115,16 +117,12 @@ export class MainScreenComponent implements OnInit{
 
   onDragEnd(event: any, element: Customer) {
 
-    console.log(event);
-
-    const distance = event.distance;
-    const tableX = this.mainScreenService.tables.find((item) => item.id === element.id && item.tabId === element.tabId);
-    if(tableX)
-    {
-      tableX.name = element.name;
-      tableX.x = distance.x;
-      tableX.y = distance.y;
-
+    const {x, y} = event.distance; // Ensure you're using the correct properties
+    const table = this.mainScreenService.tables.find(item => item.id === element.id && item.tabId === element.tabId);
+    if (table) {
+      const index = this.mainScreenService.tables.indexOf(table);
+      this.mainScreenService.tables[index] = {...table, x: x, y: y}; // Create a new object
+      this.cdr.detectChanges();
     }
     console.log(this.mainScreenService.tables);
     console.log(this.draggableElements);

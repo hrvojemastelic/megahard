@@ -6,10 +6,10 @@
           <mat-form-field>
             <input matInput [(ngModel)]="searchTerm" placeholder="Search by Name" (input)="searchItems()" />
           </mat-form-field>
-        
+
           <button mat-raised-button color="primary" (click)="searchItems()">Search</button>
         </div>
-        
+
         <mat-grid-list cols="3" rowHeight="20:10">
           <mat-grid-tile *ngFor="let item of items; let i = index" (mouseenter)="onMouseEnter(item)" (click)="addToToPayList(item)">
             <div style="height: 100%; width: 100%; display: flex; flex-direction: column; cursor: pointer;" [ngClass]="{'selected-item': selectedItem === item}">
@@ -18,7 +18,7 @@
             </div>
           </mat-grid-tile>
         </mat-grid-list>
-        
+
       </th>
       <th style="width: 50%; vertical-align: top;">
         <h1>{{customerName}}</h1>
@@ -44,7 +44,7 @@
                 </div>
               </td>
             </tr>
-            
+
           </tbody>
         </table>
         <br>

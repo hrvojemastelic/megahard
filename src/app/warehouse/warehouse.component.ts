@@ -56,7 +56,7 @@ export class WarehouseComponent  implements OnInit {
   newItemForm!: FormGroup; // Declare a form group for your form fields
   private originalItemsSubscription: Subscription;
   numberOfCols:number= 10;
-
+  alarm:number = 20;
 
   constructor(private warehouseService:WarehouseService,
     private authService: AuthService,

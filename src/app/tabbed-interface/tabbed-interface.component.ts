@@ -63,6 +63,7 @@ export class TabbedInterfaceComponent  implements OnInit {
     });
   }
   ngOnInit(): void {
+
     const storedUser = this.authService.getUser();
     this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
 }
@@ -150,35 +151,40 @@ onTabChange(index: number) {
 
 getTablesList()
 {
+  this.dialogService.openDialog('Učitaj prostorije', 'Sigurno želite učitati prostorije ?','Ne','Da','400px', '175px').afterClosed().subscribe((result: any) => {
+    if (result) {
+      console.log('User clicked Yes');
+      this.tabbedInterfaceService.getTablesList(this.user.id)
+      .subscribe(
+        (response) => {
+          // Handle the response from the backend, if needed
+          console.log('Insert successful', response['data'].tabs);
 
-  this.tabbedInterfaceService.getTablesList(this.user.id)
-  .subscribe(
-    (response) => {
-      // Handle the response from the backend, if needed
-      console.log('Insert successful', response['data'].tabs);
-
-      if(response['data'])
-      {
-        if(response['data'].tables)
-        {
-          this.mainService.tables = response['data'].tables as Customer[];
+          if(response['data'])
+          {
+            if(response['data'].tables)
+            {
+              this.mainService.tables = response['data'].tables as Customer[];
+            }
+            const numberOfTabs :number = response['data'].tabs;
+            for(let i = 0; i < numberOfTabs; i ++)
+            {
+              this.addNewTab()
+            }
+          }
+          // Clear the newAddedItems array after successful insert
+        },
+        (error) => {
+          // Handle any errors that occurred during the HTTP request
+          console.error('Error inserting data', error);
         }
-        const numberOfTabs :number = response['data'].tabs;
-        for(let i = 0; i < numberOfTabs; i ++)
-        {
-          this.addNewTab()
-        }
-
-
-      }
-
-      // Clear the newAddedItems array after successful insert
-    },
-    (error) => {
-      // Handle any errors that occurred during the HTTP request
-      console.error('Error inserting data', error);
+      );      // Handle Yes button click
+    } else {
+      console.log('User clicked No');
+      // Handle No button click
     }
-  );
+  });
+
 }
 
 }

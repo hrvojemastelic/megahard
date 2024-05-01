@@ -78,7 +78,6 @@ export class SideCalcComponent implements OnInit {
   this.sideCalcService.customerData$.subscribe(updatedData => {
     // Handle the updated data here
     this.customerData = updatedData;
-    console.log(this.customerData);
 
     if(this.customerData)
     {
@@ -89,7 +88,7 @@ export class SideCalcComponent implements OnInit {
 
   this.warehouseService.insertComplete$.subscribe(inserted => {
     if (inserted) {
-      // Call the getWarehouseList method here
+      // Call the getWarehouseList method here this is called after change in warehouse
       this.getWarehouseList();
     }
   });
@@ -159,34 +158,48 @@ onMouseEnter(item: ItemWarehouse) {
 
 addToToPayList(item: ItemWarehouse) {
   // Check if the item with the same ID already exists in the toPayList
-  console.log(this.customerData);
-  if(this.customerData)
-  {
-  const isItemAlreadyAdded = this.customerData.items.some((payListItem) => payListItem.id === item.id);
-    // Find the index of the corresponding item in the originalItems list based on its ID
-    const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+  console.log(item);
+  if(item.quantity > 0)
+    {
+      if(this.customerData)
+        {
+        const isItemAlreadyAdded = this.customerData.items.some((payListItem) => payListItem.id === item.id);
+          // Find the index of the corresponding item in the originalItems list based on its ID
+          const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
 
-    // If the original item is found, decrement its quantity
-    if (originalItemIndex !== -1) {
-      this.originalItems[originalItemIndex].quantity -= 1;
+          // If the original item is found, decrement its quantity
+          if (originalItemIndex !== -1) {
+            this.originalItems[originalItemIndex].quantity -= 1;
+          }
+          this.sideCalcService.updateOriginalItems(this.originalItems);
+          console.log(this.originalItems);
+
+        if (!isItemAlreadyAdded) {
+          // Create a deep copy of the item to ensure it's a new instance
+          const newItem = { ...item };
+          this.toPayList.push(newItem);
+          this.customerData.items.push(newItem);
+          this.calculateTotalValue();
+
+
+        } else {
+          // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
+          console.log('Item with ID', item.id, 'is already in the toPayList');
+          // You can add further logic or UI feedback here
+        }
+      }
     }
-    this.sideCalcService.updateOriginalItems(this.originalItems);
-    console.log(this.originalItems);
+    else
+    {
+      this.dialogService.openDialog('Skladište', 'Stanje na skladištu nije dovoljno.',null,'Ok','400px', '175px').afterClosed().subscribe((result: any) => {
+        if (result) {
+          // Handle Yes button click
+        } else {
+          // Handle No button click
+        }
+      });
+    }
 
-  if (!isItemAlreadyAdded) {
-    // Create a deep copy of the item to ensure it's a new instance
-    const newItem = { ...item };
-    this.toPayList.push(newItem);
-    this.customerData.items.push(newItem);
-    this.calculateTotalValue();
-
-
-  } else {
-    // If the item is already in the toPayList, handle it accordingly (e.g., show a message)
-    console.log('Item with ID', item.id, 'is already in the toPayList');
-    // You can add further logic or UI feedback here
-  }
-}
 }
 
 
@@ -212,23 +225,22 @@ calculateTotalValue() {
     console.error("Error in calculateTotalValue:", error);
   }
   this.customerData.toPay = this.totalValue;
-  console.log(this.customerData.toPay);
   }
 }
 
 incrementQuantity(item: ItemWarehouse,index:number) {
-  if(item.quantity > 0)
+      // Find the index of the corresponding item in the originalItems list based on its ID
+  console.log(this.originalItems[index]);
+  const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
+
+  if(this.originalItems[originalItemIndex].quantity > 0)
   {
     this.customerData.items[index].qToPay = (item.qToPay || 0) + 1;
-    // Find the index of the corresponding item in the originalItems list based on its ID
-    const originalItemIndex = this.originalItems.findIndex(originalItem => originalItem.id === item.id);
-
     // If the original item is found, decrement its quantity
     if (originalItemIndex !== -1) {
       this.originalItems[originalItemIndex].quantity -= 1;
       this.sideCalcService.updateOriginalItems(this.originalItems);
     }
-    console.log(this.originalItems);
 
    this.calculateTotalValue();
   }

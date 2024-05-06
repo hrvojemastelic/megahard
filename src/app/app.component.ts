@@ -38,9 +38,7 @@ export class AppComponent implements OnInit {
  @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     // Cancel the event
-    const numberOfTabs = this.tabbedInterfaceService.tabs;
-    this.mainScreenService.saveTablePositions(this.mainScreenService.tables,this.user.id,numberOfTabs.length);
-    $event.returnValue = 'Are you sure you want to leave?';
+    $event.returnValue = false;
   }
 
   title = 'megahard';
@@ -77,10 +75,6 @@ export class AppComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     }
-
-
-    const storedUser = this.authService.getUser();
-    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
   }
   logout() {
     // Call the logout service method

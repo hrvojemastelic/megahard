@@ -28,6 +28,8 @@ constructor(    private http: HttpClient,
 
   insert(itemList:ItemWarehouse[],userId:number):Observable<any>
   {
+    console.log('insert');
+
     const credentials = {
       itemList,
       userId

@@ -170,9 +170,25 @@ addToToPayList(item: ItemWarehouse) {
           // If the original item is found, decrement its quantity
           if (originalItemIndex !== -1) {
             this.originalItems[originalItemIndex].quantity -= 1;
+            this.sideCalcService.updateOriginalItems(this.originalItems);
+            this.warehouseService.insert(this.originalItems,this.user.id)
+            .subscribe(
+              (response) => {
+                // Handle the response from the backend, if needed
+                if(response['items'])
+                {
+                  console.log('Insert successful', response);
+                }
+
+                // Clear the newAddedItems array after successful insert
+              },
+              (error) => {
+                // Handle any errors that occurred during the HTTP request
+                console.error('Error inserting data', error);
+              }
+            );
           }
-          this.sideCalcService.updateOriginalItems(this.originalItems);
-          console.log(this.originalItems);
+
 
         if (!isItemAlreadyAdded) {
           // Create a deep copy of the item to ensure it's a new instance
@@ -240,6 +256,26 @@ incrementQuantity(item: ItemWarehouse,index:number) {
     if (originalItemIndex !== -1) {
       this.originalItems[originalItemIndex].quantity -= 1;
       this.sideCalcService.updateOriginalItems(this.originalItems);
+      this.warehouseService.insert(this.originalItems,this.user.id)
+      .subscribe(
+        (response) => {
+          // Handle the response from the backend, if needed
+          if(response['items'])
+          {
+            console.log('Insert successful', response);
+          }
+
+          // Clear the newAddedItems array after successful insert
+        },
+        (error) => {
+          // Handle any errors that occurred during the HTTP request
+          console.error('Error inserting data', error);
+        }
+      );
+
+      console.log(this.originalItems,'koji sta');
+
+
     }
 
    this.calculateTotalValue();
@@ -267,10 +303,26 @@ decrementQuantity(item: ItemWarehouse,index:number) {
    if (originalItemIndex !== -1) {
      this.originalItems[originalItemIndex].quantity += 1;
      this.sideCalcService.updateOriginalItems(this.originalItems);
+     this.warehouseService.insert(this.originalItems,this.user.id)
+     .subscribe(
+      (response) => {
+        // Handle the response from the backend, if needed
+        if(response['items'])
+        {
+          console.log('Insert successful', response);
+        }
+
+        // Clear the newAddedItems array after successful insert
+      },
+      (error) => {
+        // Handle any errors that occurred during the HTTP request
+        console.error('Error inserting data', error);
+      }
+    );
+
+     console.log(this.originalItems,'koji sta');
    }
     this.calculateTotalValue();
-
-    console.log(this.originalItems);
   }
 }
 

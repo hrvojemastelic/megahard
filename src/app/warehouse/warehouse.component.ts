@@ -70,7 +70,7 @@ export class WarehouseComponent  implements OnInit {
     // Initialize the originalItems with a copy of the initial items array
     this.originalItemsSubscription = this.sideCalcService.originalItems$.subscribe(items => {
       this.originalItems = items;
-      this.items = items
+      this.items = items;
 
     });
     this.tabbedInterfaceService.drawerOpenWarehouse$.subscribe((value) => {

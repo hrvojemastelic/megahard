@@ -148,8 +148,13 @@ export class MainScreenComponent implements OnInit ,AfterViewInit{
 
       // Function to delete selected items
   deleteSelectedItems() {
-    this.draggableElements = this.draggableElements.filter(item => !this.selectedItems.includes(item));
-    this.selectedItems = [];
+    this.draggableElements = this.draggableElements.filter(
+      item => !this.selectedItems.some(selected => selected.id === item.id)
+    );
+    this.mainScreenService.tables = this.mainScreenService.tables.filter(
+      item => !this.selectedItems.some(selected => selected.id === item.id)
+    );
+        this.selectedItems = [];
   }
 
   openYesNoDialog(): void {

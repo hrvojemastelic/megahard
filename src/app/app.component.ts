@@ -16,6 +16,8 @@ import { AuthService } from '../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { isPlatformBrowser } from '@angular/common';
+import { DialogService } from '../services/dialog.service';
+import { MainScreenService } from '../services/main-screen.service';
 
 @Component({
   selector: 'app-root',
@@ -33,11 +35,13 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
- /*@HostListener('window:beforeunload', ['$event'])
+ @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     // Cancel the event
-    $event.returnValue = false;
-  }*/
+    const numberOfTabs = this.tabbedInterfaceService.tabs;
+    this.mainScreenService.saveTablePositions(this.mainScreenService.tables,this.user.id,numberOfTabs.length);
+    $event.returnValue = 'Are you sure you want to leave?';
+  }
 
   title = 'megahard';
   opened: boolean =false;
@@ -48,7 +52,9 @@ export class AppComponent implements OnInit {
   constructor(private router: Router
     ,public tabbedInterfaceService: TabbedInterfaceService,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private dialogService:DialogService,
+  private mainScreenService :MainScreenService) {
 
     this.tabbedInterfaceService.drawerOpen$.subscribe((value) => {
       this.opened = value;
@@ -62,6 +68,7 @@ export class AppComponent implements OnInit {
 
   }
   ngOnInit(): void {
+
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('token');
       if (token) {
@@ -70,6 +77,10 @@ export class AppComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     }
+
+
+    const storedUser = this.authService.getUser();
+    this.user = storedUser ? JSON.parse(storedUser) : { id: 0 };
   }
   logout() {
     // Call the logout service method

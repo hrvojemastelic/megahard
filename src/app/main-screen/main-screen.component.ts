@@ -117,11 +117,13 @@ export class MainScreenComponent implements OnInit ,AfterViewInit{
 
   onDragEnd(event: any, element: Customer) {
 
+    console.log(event);
+
     const {x, y} = event.distance; // Ensure you're using the correct properties
     const table = this.mainScreenService.tables.find(item => item.id === element.id && item.tabId === element.tabId);
     if (table) {
       const index = this.mainScreenService.tables.indexOf(table);
-      this.mainScreenService.tables[index] = {...table, x: x, y: y}; // Create a new object
+      this.mainScreenService.tables[index] = {...table, x: x + element.x, y: y + element.y}; // Create a new object
       this.cdr.detectChanges();
     }
     console.log(this.mainScreenService.tables);

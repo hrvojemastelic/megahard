@@ -1,5 +1,5 @@
 export const enviromment =
 {
   production: true,
-  domanin:'http://megahard.hr'
+  domanin:'https://megahard.duckdns.org'
 }

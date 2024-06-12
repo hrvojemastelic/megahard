@@ -102,17 +102,27 @@ export class MainScreenComponent implements OnInit ,AfterViewInit{
     console.log(this.completeCustomerList);
 
   }
-   savePosition() {
+  savePosition() {
+    // Ensure the names and positions in draggableElements are synced with mainScreenService.tables
+    this.draggableElements.forEach(element => {
+      const table = this.mainScreenService.tables.find(item => item.id === element.id && item.tabId === element.tabId);
+      if (table) {
+        table.name = element.name;
+        table.x = element.x;
+        table.y = element.y;
+      }
+    });
 
-    const numberOfTabs = this.tabbedInterfaceService.tabs;
-    this.mainScreenService.saveTablePositions(this.mainScreenService.tables, this.user.id,numberOfTabs.length).subscribe(
+    const numberOfTabs = this.tabbedInterfaceService.tabs.length;
+    this.mainScreenService.saveTablePositions(this.mainScreenService.tables, this.user.id, numberOfTabs).subscribe(
       () => {
         console.log('Table positions saved successfully');
       },
       (error) => {
         console.error('Error saving table positions:', error);
       }
-    );    console.log(this.draggableElements);
+    );
+    console.log(this.draggableElements);
   }
 
   onDragEnd(event: any, element: Customer) {

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ConfigService {
-  private backendUrl = 'http://localhost:3000'; // Replace with your backend server URL
+  private backendUrl = 'https://megahard.duckdns.org'; // Replace with your backend server URL
 
   getBackendUrl(): string {
     return this.backendUrl;

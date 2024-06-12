@@ -74,10 +74,14 @@ export class TabbedInterfaceComponent  implements OnInit {
 
   }
 
-  removeTab(tab: {id:number, label: string; content: Type<any> }) {
+  removeTab(tab: { id: number, label: string; content: Type<any> }) {
     const index = this.tabbedInterfaceService.tabs.indexOf(tab);
     if (index !== -1) {
       this.tabbedInterfaceService.tabs.splice(index, 1);
+      if (this.activeTabId === tab.id) {
+        // Adjust activeTabId if the removed tab was active
+        this.activeTabId = this.tabbedInterfaceService.tabs.length ? this.tabbedInterfaceService.tabs[Math.max(0, index - 1)].id : null;
+      }
     }
   }
 
@@ -136,14 +140,11 @@ export class TabbedInterfaceComponent  implements OnInit {
 }
 
 onTabChange(index: number) {
-  // Ensure index is within bounds of tabs array
-  if (index >= 0 && index < this.tabbedInterfaceService.tabs.length) {
+   // Ensure index is within bounds of tabs array
+   if (index >= 0 && index < this.tabbedInterfaceService.tabs.length) {
     this.activeTabId = this.tabbedInterfaceService.tabs[index].id;
-
-      this.tabbedInterfaceService.setActiveTabId(this.activeTabId);
-
+    this.tabbedInterfaceService.setActiveTabId(this.activeTabId);
   } else {
-
     this.activeTabId = null; // Reset activeTabId if index is out of bounds
   }
 }
@@ -185,6 +186,14 @@ getTablesList()
     }
   });
 
+}
+
+ // New method to get selected index
+ getSelectedIndex(): number | null {
+  if (this.activeTabId === null) {
+    return null;
+  }
+  return this.tabbedInterfaceService.tabs.findIndex(tab => tab.id === this.activeTabId);
 }
 
 }
